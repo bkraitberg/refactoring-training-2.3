@@ -123,7 +123,7 @@ namespace UnitTestProject
                     Tusc.Start(users, products);
                 }
 
-                Assert.IsTrue(writer.ToString().Contains("You entered an invalid password"));
+                Assert.IsTrue(writer.ToString().Contains("You entered an invalid userid or password"));
             }
         }
 
@@ -134,7 +134,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n8\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n8\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -151,7 +151,7 @@ namespace UnitTestProject
         {
             // Update data file
             List<User> tempUsers = DeepCopy<List<User>>(originalUsers);
-            tempUsers.Where(u => u.Name == "Jason").Single().Bal = 0.0;
+            tempUsers.Where(u => u.UserName == "Jason").Single().Balance = 0.0;
 
             using (var writer = new StringWriter())
             {

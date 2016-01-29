@@ -11,10 +11,10 @@ namespace Refactoring
     public class User
     {
         [JsonProperty("Username")]
-        public string Name;
+        public string UserName;
         [JsonProperty("Password")]
-        public string Pwd;
+        public string Password;
         [JsonProperty("Balance")]
-        public double Bal;
+        public double Balance;
     }
 }
