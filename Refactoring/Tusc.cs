@@ -62,7 +62,7 @@ namespace Refactoring
                     Console.WriteLine("Your balance is " + LoggedInUser.Balance.ToString("C"));
 
                     QuantityOrdered = GetValidUserProductQuantity();
-                    if (VerifyUserFundsForSelectedPurchase(SelectedProductNumber, QuantityOrdered) && VerifyStockOnHand(SelectedProductNumber, QuantityOrdered))
+                    if (QuantityOrdered > 0 && VerifyUserFundsForSelectedPurchase(SelectedProductNumber, QuantityOrdered) && VerifyStockOnHand(SelectedProductNumber, QuantityOrdered))
                     {
                         OrderProduct(SelectedProductNumber, QuantityOrdered);
                     }
@@ -156,7 +156,7 @@ namespace Refactoring
         private static bool ValidateQuantityEntered(string quantityEntered, out int Quantity)
         {
             bool ValidQuantitySelected = false;
-            if (ConvertStringToInteger(quantityEntered, out Quantity) && (Quantity > 0))
+            if (ConvertStringToInteger(quantityEntered, out Quantity) && (Quantity >= 0))
             {
                 ValidQuantitySelected = true;
             }

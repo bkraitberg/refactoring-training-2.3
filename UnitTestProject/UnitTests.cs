@@ -134,7 +134,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n8\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n8\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -187,6 +187,24 @@ namespace UnitTestProject
                 }
 
                 Assert.IsTrue(writer.ToString().Contains("is out of stock"));
+            }
+        }
+
+        [TestMethod]
+        public void Test_ProductListContainsExitItem()
+        {
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n8\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, products);
+                }
+
+                Assert.IsTrue(writer.ToString().Contains("8: Exit"));
             }
         }
 
