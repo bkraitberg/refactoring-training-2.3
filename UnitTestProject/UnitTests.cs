@@ -21,11 +21,11 @@ namespace UnitTestProject
         public void Test_Initialize()
         {
             // Load users from data file
-            originalUsers = JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(@"Data\Users.json"));
+            originalUsers = JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(@"Data/Users.json"));
             users = DeepCopy<List<User>>(originalUsers);
 
             // Load products from data file
-            originalProducts = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(@"Data\Products.json"));
+            originalProducts = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(@"Data/Products.json"));
             products = DeepCopy<List<Product>>(originalProducts);
         }
 

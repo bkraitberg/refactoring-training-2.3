@@ -184,10 +184,10 @@ namespace Refactoring
         private static void UpdateCurrentUsersBalance()
         {
             string json = JsonConvert.SerializeObject(UserList, Formatting.Indented);
-            File.WriteAllText(@"Data\Users.json", json);
+            File.WriteAllText(@"Data/Users.json", json);
 
             string json2 = JsonConvert.SerializeObject(ProductList, Formatting.Indented);
-            File.WriteAllText(@"Data\Products.json", json2);
+            File.WriteAllText(@"Data/Products.json", json2);
         }
 
         private static int GetValidUserProductSelection()
