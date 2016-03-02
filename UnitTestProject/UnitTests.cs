@@ -34,12 +34,12 @@ namespace UnitTestProject
         {
             // Restore users
             string json = JsonConvert.SerializeObject(originalUsers, Formatting.Indented);
-            File.WriteAllText(@"Data\Users.json", json);
+            File.WriteAllText(@"Data/Users.json", json);
             users = DeepCopy<List<User>>(originalUsers);
 
             // Restore products
             string json2 = JsonConvert.SerializeObject(originalProducts, Formatting.Indented);
-            File.WriteAllText(@"Data\Products.json", json2);
+            File.WriteAllText(@"Data/Products.json", json2);
             products = DeepCopy<List<Product>>(originalProducts);
         }
 
