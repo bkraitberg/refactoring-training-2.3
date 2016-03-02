@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using NUnit.Framework;
 using Refactoring;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace UnitTestProject
 {
-    [TestClass]
+    [TestFixture]
     public class UnitTests
     {
         private List<User> users;
@@ -16,7 +17,7 @@ namespace UnitTestProject
         private List<Product> products;
         private List<Product> originalProducts;
 
-        [TestInitialize]
+        [SetUp]
         public void Test_Initialize()
         {
             // Load users from data file
@@ -28,7 +29,7 @@ namespace UnitTestProject
             products = DeepCopy<List<Product>>(originalProducts);
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Test_Cleanup()
         {
             // Restore users
@@ -42,7 +43,7 @@ namespace UnitTestProject
             products = DeepCopy<List<Product>>(originalProducts);
         }
 
-        [TestMethod]
+        [Test]
         public void Test_StartingTuscFromMainDoesNotThrowAnException()
         {
             using (var writer = new StringWriter())
@@ -58,7 +59,7 @@ namespace UnitTestProject
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Test_TuscDoesNotThrowAnException()
         {
             using (var writer = new StringWriter())
@@ -74,7 +75,7 @@ namespace UnitTestProject
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Test_InvalidUserIsNotAccepted()
         {
             using (var writer = new StringWriter())
@@ -92,7 +93,7 @@ namespace UnitTestProject
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Test_EmptyUserDoesNotThrowAnException()
         {
             using (var writer = new StringWriter())
@@ -108,7 +109,7 @@ namespace UnitTestProject
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Test_InvalidPasswordIsNotAccepted()
         {
             using (var writer = new StringWriter())
@@ -126,7 +127,7 @@ namespace UnitTestProject
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Test_UserCanCancelPurchase()
         {
             using (var writer = new StringWriter())
@@ -145,7 +146,7 @@ namespace UnitTestProject
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Test_ErrorOccursWhenBalanceLessThanPrice()
         {
             // Update data file
@@ -167,7 +168,7 @@ namespace UnitTestProject
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Test_ErrorOccursWhenProductOutOfStock()
         {
             // Update data file
@@ -189,7 +190,7 @@ namespace UnitTestProject
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Test_ProductListContainsExitItem()
         {
             using (var writer = new StringWriter())
