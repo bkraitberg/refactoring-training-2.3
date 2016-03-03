@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Net.Mime;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,33 +44,33 @@ namespace Refactoring
 
         private static void OrderProducts()
         {
-            int SelectedProductNumber;
-            int QuantityOrdered;
-
             while (true)
             {
                 ShowProductList();
-                SelectedProductNumber = GetValidUserProductSelection();
+                int SelectedProductNumber = GetValidUserProductSelection();
+                if (SelectedProductNumber == 0)
+                {
+                    break;
+                }
+                
                 if (SelectedProductNumber == ProductList.Count + 1)
                 {
                     UpdateCurrentUsersBalance();
                     break;
                 }
+                
+                Console.WriteLine();
+                Console.WriteLine("You want to buy: " + ProductList[SelectedProductNumber-1].Name);
+                Console.WriteLine("Your balance is " + LoggedInUser.Balance.ToString("C"));
+
+                int QuantityOrdered = GetValidUserProductQuantity();
+                if (QuantityOrdered > 0 && VerifyUserFundsForSelectedPurchase(SelectedProductNumber, QuantityOrdered) && VerifyStockOnHand(SelectedProductNumber, QuantityOrdered))
+                {
+                    OrderProduct(SelectedProductNumber, QuantityOrdered);
+                }
                 else
                 {
-                    Console.WriteLine();
-                    Console.WriteLine("You want to buy: " + ProductList[SelectedProductNumber-1].Name);
-                    Console.WriteLine("Your balance is " + LoggedInUser.Balance.ToString("C"));
-
-                    QuantityOrdered = GetValidUserProductQuantity();
-                    if (QuantityOrdered > 0 && VerifyUserFundsForSelectedPurchase(SelectedProductNumber, QuantityOrdered) && VerifyStockOnHand(SelectedProductNumber, QuantityOrdered))
-                    {
-                        OrderProduct(SelectedProductNumber, QuantityOrdered);
-                    }
-                    else
-                    {
-                        ShowPurchaseCancelledMessage();
-                    }
+                    ShowPurchaseCancelledMessage();
                 }
             }
         }
@@ -96,7 +97,7 @@ namespace Refactoring
 
         private static void RemoveItemsFromInventory(int SelectedProductNumber, int QuantityOrdered)
         {
-            ProductList[SelectedProductNumber-1].Qty = ProductList[SelectedProductNumber-1].Qty - QuantityOrdered;
+            ProductList[SelectedProductNumber-1].Quantity = ProductList[SelectedProductNumber-1].Quantity - QuantityOrdered;
         }
 
         private static void ShowOrderConfirmationMessage(int SelectedProductNumber, int QuantityOrdered)
@@ -111,7 +112,7 @@ namespace Refactoring
         private static bool VerifyStockOnHand(int SelectedProductNumber, int QuantityOrdered)
         {
             bool stockOnHand = true;
-            if (ProductList[SelectedProductNumber-1].Qty <= QuantityOrdered)
+            if (ProductList[SelectedProductNumber-1].Quantity < QuantityOrdered)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -197,7 +198,7 @@ namespace Refactoring
 	        {
 	            Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
-                if (validateProduct(ProductNumberEntered, out productNumber))
+                if (ValidateProduct(ProductNumberEntered, out productNumber))
                 {
                    break;
                 }
@@ -205,10 +206,15 @@ namespace Refactoring
             return productNumber;
         }
 
-        private static bool validateProduct(string ProductNumberEntered, out int productNumber )
+        private static bool ValidateProduct(string ProductNumberEntered, out int productNumber )
         {
             bool validProductSelected = false;
             
+            if (ProductNumberEntered != null && ProductNumberEntered.ToLower().Equals("quit"))
+            {
+                productNumber = 0;
+                return true;
+            }
             if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
             {
                 validProductSelected = true;
@@ -233,12 +239,18 @@ namespace Refactoring
         {
             Console.WriteLine();
             Console.WriteLine("What would you like to buy?");
+            var count = 0;
+
             for (int i = 0; i < ProductCount; i++)
             {
-                Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if (ProductList[i].Quantity > 0)
+                {
+                    Console.WriteLine(ProductList[i].Id + ": " + ProductList[i].Name + " (" + ProductList[i].Price.ToString("C") +")");
+                    count = Int32.Parse(ProductList[i].Id);
+                }
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine((count + 1)
+                + ": Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
@@ -345,8 +357,6 @@ namespace Refactoring
             }
             return UserIsFound;
         }
-
-        
 
         private static void ShowWelcomeMessage()
         {

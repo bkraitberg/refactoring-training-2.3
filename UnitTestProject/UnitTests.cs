@@ -17,7 +17,8 @@ namespace UnitTestProject
         private List<Product> products;
         private List<Product> originalProducts;
 
-        private int EXIT_NUMBER = 0;
+        private int PRODUCT_NUMBER = 0;
+        private string EXIT_APPLICATION = "quit";
 
         [SetUp]
         public void Test_Initialize()
@@ -30,7 +31,7 @@ namespace UnitTestProject
             originalProducts = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(@"Data/Products.json"));
             products = DeepCopy<List<Product>>(originalProducts);
 
-            EXIT_NUMBER = products.Count + 1;
+            PRODUCT_NUMBER = products.Count + 1;
         }
 
         [TearDown]
@@ -54,7 +55,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + PRODUCT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -70,7 +71,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + PRODUCT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -138,7 +139,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + PRODUCT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -154,14 +155,14 @@ namespace UnitTestProject
         public void Test_ErrorOccursWhenBalanceLessThanPrice()
         {
             // Update data file
-            List<User> tempUsers = DeepCopy<List<User>>(originalUsers);
-            tempUsers.Where(u => u.UserName == "Jason").Single().Balance = 0.0;
+            var tempUsers = DeepCopy<List<User>>(originalUsers);
+            tempUsers.Single(u => u.UserName == "Jason").Balance = 0.0;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + PRODUCT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -176,14 +177,14 @@ namespace UnitTestProject
         public void Test_ErrorOccursWhenProductOutOfStock()
         {
             // Update data file
-            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            var tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Single(u => u.Name == "Chips").Quantity = 0;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + PRODUCT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -195,41 +196,87 @@ namespace UnitTestProject
         }
 
         [Test]
+        public void Test_UserCanPurchaseProductWhenOnlyOneInStock()
+        {
+            // Update data file
+            var tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Single(u => u.Name == "Chips").Quantity = 1;
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + PRODUCT_NUMBER + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsTrue(writer.ToString().Contains("You bought 1 Chips"));
+
+            }
+        }
+        
+        [Test]
         public void Test_ProductListContainsExitItem()
         {
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_APPLICATION + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
                     Tusc.Start(users, products);
                 }
 
-                Assert.IsTrue(writer.ToString().Contains("" + EXIT_NUMBER + ": Exit"));
+                Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
             }
         }
 
-        //[Test]
-        //public void Test_UserCanExitByEnteringQuit()
-        //{
-        //    using (var writer = new StringWriter())
-        //    {
-        //        Console.SetOut(writer);
+        [Test]
+        public void Test_ProductsWithZeroQuantityDoNotAppearInMenu()
+        {
+            // Update data file
+            var tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Single(u => u.Name == "Chips").Quantity = 0;
 
-        //        using (var reader = new StringReader("Jason\r\nsfa\r\nquit\r\n\r\n"))
-        //        {
-        //            Console.SetIn(reader);
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
 
-        //            Tusc.Start(users, products);
-        //        }
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + PRODUCT_NUMBER + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
 
-        //        Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
-        //        Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
-        //    }
-        //}
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsTrue(writer.ToString().Contains("Chips is out of stock"));
+            }
+        }
+
+
+        [Test]
+        public void Test_UserCanExitByEnteringQuit()
+        {
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\nquit\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, products);
+                }
+
+                Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
+                Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
+            }
+        }
 
         private static T DeepCopy<T>(T obj)
         {
