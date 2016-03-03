@@ -221,7 +221,8 @@ namespace Refactoring
             
             if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
             {
-                validProductSelected = true;
+                if(ProductList[productNumber - 1].Qty != 0)
+                    validProductSelected = true;
             }
             else
             {
@@ -247,7 +248,7 @@ namespace Refactoring
             {
                 Product prod = ProductList[i];
 
-                if(prod.Qty != 0)
+                if (prod.Qty != 0)
                     Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
             Console.WriteLine("Type quit to exit the application");
