@@ -16,9 +16,7 @@ namespace UnitTestProject
         private List<User> originalUsers;
         private List<Product> products;
         private List<Product> originalProducts;
-
-        private string EXIT_NUMBER = "quit";
-
+        
         [SetUp]
         public void Test_Initialize()
         {
@@ -52,7 +50,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + Tusc.QUIT_CODE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -68,7 +66,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + Tusc.QUIT_CODE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -136,7 +134,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + Tusc.QUIT_CODE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -159,7 +157,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + Tusc.QUIT_CODE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -175,13 +173,13 @@ namespace UnitTestProject
         {
             // Update data file
             List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 1;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n2\r\n" + Tusc.QUIT_CODE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -199,7 +197,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + Tusc.QUIT_CODE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -221,7 +219,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + Tusc.QUIT_CODE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -239,7 +237,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\nquit\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + Tusc.QUIT_CODE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -248,6 +246,28 @@ namespace UnitTestProject
 
                 Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
                 Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
+            }
+        }
+
+        [Test]
+        public void Test_ProductsWithZeroQuantityDoNotAppearInMenu()
+        {
+            // Update data file
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + Tusc.QUIT_CODE + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsFalse(writer.ToString().Contains(": Chips"));
             }
         }
 

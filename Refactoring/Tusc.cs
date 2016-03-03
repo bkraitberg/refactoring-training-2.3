@@ -11,6 +11,7 @@ namespace Refactoring
     public class Tusc
     {
         private static List<User> UserList;
+        private static List<Product> InitialProductList;
         private static List<Product> ProductList;
         private static User LoggedInUser;
         private static int ProductCount;
@@ -40,8 +41,7 @@ namespace Refactoring
         private static void InitializeMemberVariables(List<User> usrs, List<Product> prods)
         {
             UserList = usrs;
-            ProductList = prods;
-            ProductCount = prods.Count;
+            InitialProductList = prods;
         }
 
         private static void OrderProducts()
@@ -51,8 +51,9 @@ namespace Refactoring
 
             while (true)
             {
+                ProductList = FilterProductList(InitialProductList);
                 ShowProductList();
-                SelectedProduct = GetValidUserProductSelection();
+                SelectedProduct = GetUserEnteredSelectionCode();
                 if (SelectedProduct.Equals(QUIT_CODE, StringComparison.Ordinal))
                 {
                     UpdateCurrentUsersBalance();
@@ -78,6 +79,13 @@ namespace Refactoring
                     }
                 }
             }
+        }
+
+        private static List<Product> FilterProductList(List<Product> InitialProductList)
+        {
+            List<Product> validProducts = InitialProductList.Where( x => x.Qty > 0).ToList();
+            ProductCount = validProducts.Count;
+            return validProducts;
         }
 
         private static void ShowPurchaseCancelledMessage()
@@ -196,45 +204,48 @@ namespace Refactoring
             File.WriteAllText(@"Data/Products.json", json2);
         }
 
-        private static string GetValidUserProductSelection()
+        private static string GetUserEnteredSelectionCode()
         {
             string productCode;
             while (true)
 	        {
 	            Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
-                if (validateProduct(ProductNumberEntered, out productCode))
+                productCode = convertToCode(ProductNumberEntered);
+
+                if (productCode.Equals(ERROR_CODE))
                 {
-                   break;
+                    ShowProductNumberInvalidMessage();
+                }
+                else
+                {
+                    break;
                 }
 	        }
             return productCode;
         }
 
-        private static bool validateProduct(string ProductNumberEntered, out string productCode )
+        private static string convertToCode(string ProductNumberEntered)
         {
-            bool validProductSelected = false;
+            string productCode = ERROR_CODE;
 
             int productNumber;
             if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount))
             {
                 productCode = ProductNumberEntered;
-                validProductSelected = true;
             }
             else
             {
                 if (ProductNumberEntered.Equals(QUIT_CODE))
                 {
                     productCode = QUIT_CODE;
-                    validProductSelected = true;
                 }
                 else
                 {
-                    productCode = ERROR_CODE;
-                    ShowProductNumberInvalidMessage();
+                    productCode = ERROR_CODE;                    
                 }                
             }
-            return validProductSelected;
+            return productCode;
         }
 
         private static void ShowProductNumberInvalidMessage()
