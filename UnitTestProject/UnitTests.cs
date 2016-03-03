@@ -139,6 +139,7 @@ namespace UnitTestProject
                 Console.SetOut(writer);
 
                 using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+               // using (var reader = new StringReader("Jason\r\nsfa\r\nquit\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -171,19 +172,20 @@ namespace UnitTestProject
                 Assert.IsTrue(writer.ToString().Contains("You do not have enough money to buy that"));
             }
         }
+       
 
         [Test]
         public void Test_ErrorOccursWhenProductOutOfStock()
         {
             // Update data file
             List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 1;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n2\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -212,24 +214,66 @@ namespace UnitTestProject
             }
         }
 
-        //[Test]
-        //public void Test_UserCanExitByEnteringQuit()
-        //{
-        //    using (var writer = new StringWriter())
-        //    {
-        //        Console.SetOut(writer);
+        [Test]
+        public void Test_UserCanPurchaseProductWhenOnlyOneInStock()
+        {
+            //test only one product in stock
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 1;
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
 
-        //        using (var reader = new StringReader("Jason\r\nsfa\r\nquit\r\n\r\n"))
-        //        {
-        //            Console.SetIn(reader);
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
 
-        //            Tusc.Start(users, products);
-        //        }
+                    Tusc.Start(users, tempProducts);
+                }
 
-        //        Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
-        //        Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
-        //    }
-        //}
+                Assert.IsTrue(writer.ToString().Contains("You bought 1 Chips"));
+            }
+        }
+
+        [Test]
+        public void Test_UserCanExitByEnteringQuit()
+        {
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\nquit\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, products);
+                }
+
+                Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
+                Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
+            }
+        }
+        [Test]
+        public void Test_ProductsWithZeroQuantityDoNotAppearInMenu()
+        {
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsTrue(writer.ToString().Contains(": Chips"));
+            }
+        }
 
         private static T DeepCopy<T>(T obj)
         {
