@@ -38,8 +38,9 @@ namespace Refactoring
         private static void InitializeMemberVariables(List<User> usrs, List<Product> prods)
         {
             UserList = usrs;
-            ProductList = prods;
-            ProductCount = prods.Count;
+            // Do not include products with no quantity
+            ProductList = prods.Where(x => x.Qty > 0).ToList<Product>();
+            ProductCount = ProductList.Count;
             QuitIndex = ProductCount + 1;
         }
 
@@ -245,7 +246,8 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if (prod.Qty > 0) 
+                    Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
             Console.WriteLine("Type quit to exit the application");
         }
