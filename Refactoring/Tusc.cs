@@ -14,8 +14,8 @@ namespace Refactoring
         private static List<Product> ProductList;
         private static List<Product> DisplayProductList;
         private static User LoggedInUser;
-        
-        private const int QUIT_FLAG = -1;
+
+        private static Product QUIT_PRODUCT = new Product();
         private const string QUIT_STRING_LOWERCASE = "quit";
 
         public static void Start(List<User> users, List<Product> products)
@@ -54,7 +54,6 @@ namespace Refactoring
 
         private static void OrderProducts()
         {
-            int SelectedProductNumber;
             Product SelectedProduct;
             int QuantityOrdered;
 
@@ -63,16 +62,14 @@ namespace Refactoring
                 if (ProductCount > 0)
                 {
                     ShowProductList();
-                    SelectedProductNumber = GetValidUserProductSelection();
-                    if (SelectedProductNumber == QUIT_FLAG)
+                    SelectedProduct = GetValidUserProductSelection();
+                    if (SelectedProduct == QUIT_PRODUCT)
                     {
                         UpdateCurrentUsersBalance();
                         break;
                     }
                     else
                     {
-                        SelectedProduct = ProductList.Single(t => t.Name == DisplayProductList[SelectedProductNumber - 1].Name);
-
                         Console.WriteLine();
                         Console.WriteLine("You want to buy: " + SelectedProduct.Name);
                         Console.WriteLine("Your balance is " + LoggedInUser.Balance.ToString("C"));
@@ -224,37 +221,42 @@ namespace Refactoring
             File.WriteAllText(@"Data/Products.json", json2);
         }
 
-        private static int GetValidUserProductSelection()
+        private static Product GetValidUserProductSelection()
         {
-            int productNumber;
+            Product selectedProduct = null;
             while (true)
             {
-                Console.WriteLine("Enter the product number:");
+                Console.WriteLine("Enter the product id:");
                 string ProductNumberEntered = Console.ReadLine();
-                if (validateProduct(ProductNumberEntered, out productNumber))
+                if (validateProduct(ProductNumberEntered, out selectedProduct))
                 {
                     break;
                 }
             }
-            return productNumber;
+            return selectedProduct;
         }
 
-        private static bool validateProduct(string ProductNumberEntered, out int productNumber )
+        private static bool validateProduct(string ProductNumberEntered, out Product product )
         {
             bool validProductSelected = false;
 
             if(QUIT_STRING_LOWERCASE.Equals(ProductNumberEntered.ToLowerInvariant()))
             {
-                productNumber = QUIT_FLAG;
-                validProductSelected = true;
-            }
-            else if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount))
-            {
+                product = QUIT_PRODUCT;
                 validProductSelected = true;
             }
             else
             {
+                product = DisplayProductList.SingleOrDefault(t=>t.Id == ProductNumberEntered);
+            }
+            
+            if(product == null)
+            {
                 ShowProductNumberInvalidMessage();
+            }
+            else
+            {
+                validProductSelected = true;
             }
             return validProductSelected;
         }
@@ -263,7 +265,7 @@ namespace Refactoring
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount).ToString());
+            Console.WriteLine("Please enter a valid product Id");
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -275,7 +277,7 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = DisplayProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                Console.WriteLine(prod.Id + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
         }
 
