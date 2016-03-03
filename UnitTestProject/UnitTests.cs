@@ -176,13 +176,13 @@ namespace UnitTestProject
         {
             // Update data file
             List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 2;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_STRING + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n4\r\n" + EXIT_STRING + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
