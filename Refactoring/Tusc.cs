@@ -15,6 +15,9 @@ namespace Refactoring
         private static User LoggedInUser;
         private static int ProductCount;
 
+        private const string ExitWord = "quit";
+        private const int ExitKey = 0;
+
         public static void Start(List<User> users, List<Product> products)
         {
             InitializeMemberVariables(users, products);
@@ -50,7 +53,7 @@ namespace Refactoring
             {
                 ShowProductList();
                 SelectedProductNumber = GetValidUserProductSelection();
-                if (SelectedProductNumber == ProductList.Count + 1)
+                if (SelectedProductNumber == ExitKey)
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -215,9 +218,29 @@ namespace Refactoring
             }
             else
             {
-                ShowProductNumberInvalidMessage();
+                if (UserWantsToQuit(ProductNumberEntered))
+                {
+                    validProductSelected = true;
+                    productNumber = 0;
+                }
+                else
+                {
+                    ShowProductNumberInvalidMessage();                    
+                }
             }
             return validProductSelected;
+        }
+
+        private static bool UserWantsToQuit(string productNumberEntered)
+        {
+            if (productNumberEntered.ToLower() == ExitWord)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private static void ShowProductNumberInvalidMessage()
@@ -238,7 +261,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
