@@ -154,8 +154,8 @@ namespace UnitTestProject
         public void Test_ErrorOccursWhenBalanceLessThanPrice()
         {
             // Update data file
-            List<User> tempUsers = DeepCopy<List<User>>(originalUsers);
-            tempUsers.Where(u => u.UserName == "Jason").Single().Balance = 0.0;
+            var tempUsers = DeepCopy<List<User>>(originalUsers);
+            tempUsers.Single(u => u.UserName == "Jason").Balance = 0.0;
 
             using (var writer = new StringWriter())
             {
@@ -176,8 +176,8 @@ namespace UnitTestProject
         public void Test_ErrorOccursWhenProductOutOfStock()
         {
             // Update data file
-            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            var tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Single(u => u.Name == "Chips").Quantity = 0;
 
             using (var writer = new StringWriter())
             {
@@ -194,6 +194,29 @@ namespace UnitTestProject
             }
         }
 
+        [Test]
+        public void Test_UserCanPurchaseProductWhenOnlyOneInStock()
+        {
+            // Update data file
+            var tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Single(u => u.Name == "Chips").Quantity = 1;
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsTrue(writer.ToString().Contains("You bought 1 Chips"));
+
+            }
+        }
+        
         [Test]
         public void Test_ProductListContainsExitItem()
         {

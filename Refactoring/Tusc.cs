@@ -96,7 +96,7 @@ namespace Refactoring
 
         private static void RemoveItemsFromInventory(int SelectedProductNumber, int QuantityOrdered)
         {
-            ProductList[SelectedProductNumber-1].Qty = ProductList[SelectedProductNumber-1].Qty - QuantityOrdered;
+            ProductList[SelectedProductNumber-1].Quantity = ProductList[SelectedProductNumber-1].Quantity - QuantityOrdered;
         }
 
         private static void ShowOrderConfirmationMessage(int SelectedProductNumber, int QuantityOrdered)
@@ -111,7 +111,7 @@ namespace Refactoring
         private static bool VerifyStockOnHand(int SelectedProductNumber, int QuantityOrdered)
         {
             bool stockOnHand = true;
-            if (ProductList[SelectedProductNumber-1].Qty <= QuantityOrdered)
+            if (ProductList[SelectedProductNumber-1].Quantity < QuantityOrdered)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
