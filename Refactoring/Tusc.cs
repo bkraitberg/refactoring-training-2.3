@@ -14,6 +14,7 @@ namespace Refactoring
         private static List<Product> ProductList;
         private static User LoggedInUser;
         private static int ProductCount;
+        private static int QuitIndex;
 
         public static void Start(List<User> users, List<Product> products)
         {
@@ -39,6 +40,7 @@ namespace Refactoring
             UserList = usrs;
             ProductList = prods;
             ProductCount = prods.Count;
+            QuitIndex = ProductCount + 1;
         }
 
         private static void OrderProducts()
@@ -50,7 +52,7 @@ namespace Refactoring
             {
                 ShowProductList();
                 SelectedProductNumber = GetValidUserProductSelection();
-                if (SelectedProductNumber == ProductList.Count + 1)
+                if (SelectedProductNumber == QuitIndex)
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -195,8 +197,15 @@ namespace Refactoring
             int productNumber;
             while (true)
 	        {
-	            Console.WriteLine("Enter the product number:");
+	            Console.WriteLine("Enter your selection:");
                 string ProductNumberEntered = Console.ReadLine();
+
+                if (ProductNumberEntered.Equals("quit"))
+                {
+                    productNumber = QuitIndex;
+                    break;
+                }
+
                 if (validateProduct(ProductNumberEntered, out productNumber))
                 {
                    break;
@@ -224,7 +233,7 @@ namespace Refactoring
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount + 1).ToString());
+            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount + 1).ToString() + " or 'quit'");
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -238,7 +247,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
