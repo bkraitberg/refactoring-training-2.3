@@ -111,7 +111,7 @@ namespace Refactoring
         private static bool VerifyStockOnHand(int SelectedProductNumber, int QuantityOrdered)
         {
             bool stockOnHand = true;
-            if (ProductList[SelectedProductNumber-1].Qty <= QuantityOrdered)
+            if (ProductList[SelectedProductNumber-1].Qty < QuantityOrdered)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -197,12 +197,27 @@ namespace Refactoring
 	        {
 	            Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
+
+                if (UserSelectedExit(ProductNumberEntered))
+                {
+                    return ProductList.Count + 1;
+                }      
+
                 if (validateProduct(ProductNumberEntered, out productNumber))
                 {
                    break;
                 }
 	        }
             return productNumber;
+        }
+
+        private static bool UserSelectedExit(string ProductNumberEntered)
+        {
+            if (ProductNumberEntered.Equals("quit"))
+            {
+                return true;
+            }
+            return false;
         }
 
         private static bool validateProduct(string ProductNumberEntered, out int productNumber )
@@ -236,9 +251,25 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if (ProductInStock(prod))
+                {
+                    Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                }
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
+        }
+
+        private static bool ProductInStock(Product prod)
+        {
+            
+            if (prod.Qty > 0)
+            {   return true;
+            }
+            else
+            {
+                return false;
+            }
+          
         }
 
         private static void ShowRemainingBalance()

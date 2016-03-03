@@ -2,7 +2,7 @@
   {
     "Name": "Chips",
     "Price": 1.49,
-    "Quantity": 50
+    "Quantity": 1
   },
   {
     "Name": "Cookies",
@@ -29,9 +29,15 @@
     "Price": 1.25,
     "Quantity": 25
   },
-  {
-    "Name": "Nuts",
-    "Price": 1.0,
-    "Quantity": 1
+    {
+        "Name": "Nuts",
+        "Price": 1.0,
+        "Quantity": 1
+    },
+      {
+    "Name": "Soup",
+    "Price": 1.25,
+    "Quantity": 50
   }
+
 ]
