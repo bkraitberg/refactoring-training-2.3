@@ -251,9 +251,25 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if (ProductInStock(prod))
+                {
+                    Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                }
             }
             Console.WriteLine("Type quit to exit the application");
+        }
+
+        private static bool ProductInStock(Product prod)
+        {
+            
+            if (prod.Qty > 0)
+            {   return true;
+            }
+            else
+            {
+                return false;
+            }
+          
         }
 
         private static void ShowRemainingBalance()
