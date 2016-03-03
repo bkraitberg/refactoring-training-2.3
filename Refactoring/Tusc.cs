@@ -50,7 +50,7 @@ namespace Refactoring
             {
                 ShowProductList();
                 SelectedProductNumber = GetValidUserProductSelection();
-                if (SelectedProductNumber == ProductList.Count + 1)
+                if (SelectedProductNumber == -1)
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -195,12 +195,18 @@ namespace Refactoring
             int productNumber;
             while (true)
 	        {
-	            Console.WriteLine("Enter the product number:");
+                Console.WriteLine();
+                Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
+                if (ProductNumberEntered.Equals("quit", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    productNumber = -1; //quit application
+                    break;
+                }
                 if (validateProduct(ProductNumberEntered, out productNumber))
                 {
                    break;
-                }
+                }               
 	        }
             return productNumber;
         }
@@ -208,8 +214,8 @@ namespace Refactoring
         private static bool validateProduct(string ProductNumberEntered, out int productNumber )
         {
             bool validProductSelected = false;
-            
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+
+            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount) && (productNumber > 0))
             {
                 validProductSelected = true;
             }
@@ -238,7 +244,9 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine();
+            Console.WriteLine("Type quit to exit the application");
+            
         }
 
         private static void ShowRemainingBalance()
