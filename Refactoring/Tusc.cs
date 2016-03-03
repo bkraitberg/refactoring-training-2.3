@@ -258,8 +258,11 @@ namespace Refactoring
             Console.WriteLine("What would you like to buy?");
             for (int i = 0; i < ProductCount; i++)
             {
-                Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if (ProductList[i].Qty > 0)
+                {
+                    Product prod = ProductList[i];
+                    Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                }
             }
             Console.WriteLine("Type quit to exit the application");
         }
