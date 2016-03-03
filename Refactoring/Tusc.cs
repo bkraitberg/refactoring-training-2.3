@@ -111,7 +111,9 @@ namespace Refactoring
         private static bool VerifyStockOnHand(int SelectedProductNumber, int QuantityOrdered)
         {
             bool stockOnHand = true;
-            if (ProductList[SelectedProductNumber-1].Qty <= QuantityOrdered)
+            int currentQuantity = ProductList[SelectedProductNumber - 1].Qty;
+
+            if (currentQuantity < QuantityOrdered || currentQuantity == 0)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
