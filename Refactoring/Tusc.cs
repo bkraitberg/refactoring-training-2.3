@@ -50,7 +50,7 @@ namespace Refactoring
             {
                 ShowProductList();
                 SelectedProductNumber = GetValidUserProductSelection();
-                if (SelectedProductNumber == ProductList.Count + 1)
+                if (SelectedProductNumber == -1)
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -111,7 +111,7 @@ namespace Refactoring
         private static bool VerifyStockOnHand(int SelectedProductNumber, int QuantityOrdered)
         {
             bool stockOnHand = true;
-            if (ProductList[SelectedProductNumber-1].Qty <= QuantityOrdered)
+            if (ProductList[SelectedProductNumber-1].Qty < QuantityOrdered)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -195,12 +195,18 @@ namespace Refactoring
             int productNumber;
             while (true)
 	        {
-	            Console.WriteLine("Enter the product number:");
+                Console.WriteLine();
+                Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
+                if (ProductNumberEntered.Equals("quit", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    productNumber = -1; //quit application
+                    break;
+                }
                 if (validateProduct(ProductNumberEntered, out productNumber))
                 {
                    break;
-                }
+                }               
 	        }
             return productNumber;
         }
@@ -208,8 +214,8 @@ namespace Refactoring
         private static bool validateProduct(string ProductNumberEntered, out int productNumber )
         {
             bool validProductSelected = false;
-            
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+
+            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount) && (productNumber > 0))
             {
                 validProductSelected = true;
             }
@@ -224,7 +230,7 @@ namespace Refactoring
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount + 1).ToString());
+            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount).ToString());
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -236,9 +242,14 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if(prod.Qty > 0)
+                {
+                    Console.WriteLine(prod.Id + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                }
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine();
+            Console.WriteLine("Type quit to exit the application");
+            
         }
 
         private static void ShowRemainingBalance()
