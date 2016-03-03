@@ -86,10 +86,10 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Joel\r\n"))
+                using (var reader = new StringReader("Jason"))
                 {
                     Console.SetIn(reader);
-
+                    
                     Tusc.Start(users, products);
                 }
 
@@ -150,6 +150,8 @@ namespace UnitTestProject
             }
         }
 
+       
+
         [Test]
         public void Test_ErrorOccursWhenBalanceLessThanPrice()
         {
@@ -191,6 +193,28 @@ namespace UnitTestProject
                 }
 
                 Assert.IsTrue(writer.ToString().Contains("is out of stock"));
+            }
+        }
+
+        [Test]
+        public void Test_UserCanPurchaseProductWhenOnlyOneInStock()
+        {
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 1;
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsTrue(writer.ToString().Contains("You bought 1 Chips"));
+
             }
         }
 
