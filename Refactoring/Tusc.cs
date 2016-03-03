@@ -214,7 +214,7 @@ namespace Refactoring
             {
                 validProductSelected = true;
             }
-            else if(ProductNumberEntered.Equals("quit"))
+            else if((ProductNumberEntered!= null)&&(ProductNumberEntered.Equals("quit")))
             {
                 validProductSelected = true;
             }
@@ -238,10 +238,17 @@ namespace Refactoring
         {
             Console.WriteLine();
             Console.WriteLine("What would you like to buy?");
+            int j = 1;
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if (prod.Qty > 0)
+                {
+                    Console.WriteLine(j + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                    j++;
+                }
+                    
+              
             }
             Console.WriteLine("Type quit to exit the application");
         }
