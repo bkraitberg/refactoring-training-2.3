@@ -68,7 +68,7 @@ namespace Refactoring
                     QuantityOrdered = GetValidUserProductQuantity();
                     if (QuantityOrdered > 0 && VerifyUserFundsForSelectedPurchase(SelectedProductNumber, QuantityOrdered) && VerifyStockOnHand(SelectedProductNumber, QuantityOrdered))
                     {
-                        OrderProduct(SelectedProductNumber, QuantityOrdered);
+                        OrderProduct(SelectedProductNumber, QuantityOrdered, ProductList[SelectedProductNumber - 1].Name);
                     }
                     else
                     {
@@ -91,11 +91,25 @@ namespace Refactoring
             Console.ResetColor();
         }
 
-        private static void OrderProduct(int SelectedProductNumber, int QuantityOrdered)
+        private static void OrderProduct(int SelectedProductNumber, int QuantityOrdered, string Name)
         {
             UpdateBalance(SelectedProductNumber, QuantityOrdered);
             RemoveItemsFromInventory(SelectedProductNumber, QuantityOrdered);
-            ShowOrderConfirmationMessage(SelectedProductNumber, QuantityOrdered);
+            ShowOrderConfirmationMessage(SelectedProductNumber, QuantityOrdered, Name);
+        }
+
+        private static void RemoveProductsifOutOfStock()
+        {
+            List<Product> newProductList = new List<Product>();
+
+            foreach (Product product in ProductList)
+            {
+                if (product.Qty > 0)
+                    newProductList.Add(product);
+            }
+
+            ProductList = newProductList;
+            ProductCount = ProductList.Count;
         }
 
         private static void UpdateBalance(int SelectedProductNumber, int QuantityOrdered)
@@ -108,11 +122,11 @@ namespace Refactoring
             ProductList[SelectedProductNumber-1].Qty = ProductList[SelectedProductNumber-1].Qty - QuantityOrdered;
         }
 
-        private static void ShowOrderConfirmationMessage(int SelectedProductNumber, int QuantityOrdered)
+        private static void ShowOrderConfirmationMessage(int SelectedProductNumber, int QuantityOrdered, string Name)
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("You bought " + QuantityOrdered + " " + ProductList[SelectedProductNumber-1].Name);
+            Console.WriteLine("You bought " + QuantityOrdered + " " + Name);
             Console.WriteLine("Your new balance is " + LoggedInUser.Balance.ToString("C"));
             Console.ResetColor();
         }
@@ -248,6 +262,8 @@ namespace Refactoring
         {
             Console.WriteLine();
             Console.WriteLine("What would you like to buy?");
+            RemoveProductsifOutOfStock();
+
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
