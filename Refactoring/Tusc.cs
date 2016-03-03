@@ -239,12 +239,17 @@ namespace Refactoring
         {
             Console.WriteLine();
             Console.WriteLine("What would you like to buy?");
+            var count = 1;
+
             for (int i = 0; i < ProductCount; i++)
             {
-                var prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if (ProductList[i].Quantity > 0)
+                {
+                    Console.WriteLine(i + 1 + ": " + ProductList[i].Name + " (" + ProductList[i].Price.ToString("C") +")");
+                    count++;
+                }
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Type quit to exit the application");
+            Console.WriteLine(count + ": Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
