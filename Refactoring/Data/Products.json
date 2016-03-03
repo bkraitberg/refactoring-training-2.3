@@ -2,41 +2,49 @@
   {
     "Name": "Chips",
     "Price": 1.49,
-    "Quantity": 50
+    "Quantity": 50,
+    "ProductId": "1a"
   },
   {
     "Name": "Cookies",
     "Price": 1.0,
-    "Quantity": 100
+    "Quantity": 100,
+    "ProductId": "2a"
   },
   {
     "Name": "Gum",
     "Price": 0.85,
-    "Quantity": 50
+    "Quantity": 50,
+    "ProductId": "3a"
   },
   {
     "Name": "Pop",
     "Price": 0.75,
-    "Quantity": 75
+    "Quantity": 75,
+    "ProductId": "4a"
   },
   {
     "Name": "Candy",
     "Price": 0.85,
-    "Quantity": 30
+    "Quantity": 30,
+    "ProductId": "5a"
   },
   {
     "Name": "Chocolate Bars",
     "Price": 1.25,
-    "Quantity": 25
+    "Quantity": 25,
+    "ProductId": "6a"
   },
   {
     "Name": "Nuts",
     "Price": 1.0,
-    "Quantity": 1
+    "Quantity": 1,
+    "ProductId": "7a"
   },
   {
     "Name": "Soup",
     "Price": 1.25,
-    "Quantity": 50
+    "Quantity": 50,
+    "ProductId": "8a"
   }
 ]
