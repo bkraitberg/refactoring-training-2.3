@@ -242,7 +242,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\nquit\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + EXIT_TEXT + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -253,6 +253,8 @@ namespace UnitTestProject
                 Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
             }
         }
+        
+
 
         private static T DeepCopy<T>(T obj)
         {
@@ -265,5 +267,7 @@ namespace UnitTestProject
                 return (T)formatter.Deserialize(stream);
             }
         }
+
+        
     }
 }
