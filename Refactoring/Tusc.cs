@@ -101,7 +101,14 @@ namespace Refactoring
 
         private static void ShowOrderConfirmationMessage(int SelectedProductNumber, int QuantityOrdered)
         {
-            Console.Clear();
+            try
+            {
+                Console.Clear();
+            }
+            catch (IOException)
+            {
+                //Console.Clear() throws IOException when running unit tests...
+            }
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("You bought " + QuantityOrdered + " " + ProductList[SelectedProductNumber-1].Name);
             Console.WriteLine("Your new balance is " + LoggedInUser.Balance.ToString("C"));
@@ -111,9 +118,16 @@ namespace Refactoring
         private static bool VerifyStockOnHand(int SelectedProductNumber, int QuantityOrdered)
         {
             bool stockOnHand = true;
-            if (ProductList[SelectedProductNumber-1].Qty <= QuantityOrdered)
+            if (ProductList[SelectedProductNumber-1].Qty < QuantityOrdered)
             {
-                Console.Clear();
+                try
+                {
+                    Console.Clear();
+                }
+                catch (IOException)
+                {
+                    //Console.Clear() throws IOException when running unit tests...
+                }
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine();
                 Console.WriteLine("Sorry, " + ProductList[SelectedProductNumber-1].Name + " is out of stock");
@@ -128,7 +142,14 @@ namespace Refactoring
             bool fundsAvailable = true;
             if ((LoggedInUser.Balance - (ProductList[SelectedProductNumber-1].Price * QuantityOrdered)) < 0)
             {
-                Console.Clear();
+                try
+                {
+                    Console.Clear();
+                }
+                catch (IOException)
+                {
+                    //Console.Clear() throws IOException when running unit tests...
+                }
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine();
                 Console.WriteLine("You do not have enough money to buy that.");
@@ -209,12 +230,17 @@ namespace Refactoring
         {
             bool validProductSelected = false;
             
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount))
             {
                 validProductSelected = true;
             }
             else
             {
+                if (!String.IsNullOrEmpty(ProductNumberEntered) && ProductNumberEntered.ToLower() == "quit")
+                {
+                    productNumber = ProductList.Count + 1;
+                    return true;
+                }
                 ShowProductNumberInvalidMessage();
             }
             return validProductSelected;
@@ -236,9 +262,10 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if (prod.Qty >= 1)
+                    Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application.");
         }
 
         private static void ShowRemainingBalance()
@@ -250,7 +277,14 @@ namespace Refactoring
 
         private static void ShowSuccessfulLoginMessage()
         {
-            Console.Clear();
+            try
+            {
+                Console.Clear();
+            }
+            catch (IOException)
+            {
+                //Console.Clear() throws IOException when running unit tests...
+            }
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine();
             Console.WriteLine("Login successful! Welcome " + LoggedInUser.UserName + "!");
@@ -286,7 +320,14 @@ namespace Refactoring
 
         private static void ShowFailedCredentialsMessage()
         {
-            Console.Clear();
+            try
+            {
+                Console.Clear();
+            }
+            catch (IOException)
+            {
+                //Console.Clear() throws IOException when running unit tests...
+            }
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine();
             Console.WriteLine("You entered an invalid userid or password.");
