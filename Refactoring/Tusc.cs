@@ -14,6 +14,8 @@ namespace Refactoring
         private static List<Product> ProductList;
         private static User LoggedInUser;
         private static int ProductCount;
+        private const int QUIT_FLAG = -1;
+        private const string QUIT_STRING_LOWERCASE = "quit";
 
         public static void Start(List<User> users, List<Product> products)
         {
@@ -50,7 +52,7 @@ namespace Refactoring
             {
                 ShowProductList();
                 SelectedProductNumber = GetValidUserProductSelection();
-                if (SelectedProductNumber == ProductList.Count + 1)
+                if (SelectedProductNumber == QUIT_FLAG)
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -208,8 +210,13 @@ namespace Refactoring
         private static bool validateProduct(string ProductNumberEntered, out int productNumber )
         {
             bool validProductSelected = false;
-            
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+
+            if(QUIT_STRING_LOWERCASE.Equals(ProductNumberEntered.ToLowerInvariant()))
+            {
+                productNumber = QUIT_FLAG;
+                validProductSelected = true;
+            }
+            else if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount))
             {
                 validProductSelected = true;
             }
@@ -224,7 +231,7 @@ namespace Refactoring
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount + 1).ToString());
+            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount).ToString());
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -232,13 +239,12 @@ namespace Refactoring
         private static void ShowProductList()
         {
             Console.WriteLine();
-            Console.WriteLine("What would you like to buy?");
+            Console.WriteLine("What would you like to buy? Type quit to exit the application");
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
         }
 
         private static void ShowRemainingBalance()
