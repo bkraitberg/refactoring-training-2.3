@@ -14,6 +14,7 @@ namespace Refactoring
         private static List<Product> ProductList;
         private static User LoggedInUser;
         private static int ProductCount;
+        private static List<int> ProductsOutOfStock;
 
         public static void Start(List<User> users, List<Product> products)
         {
@@ -39,6 +40,7 @@ namespace Refactoring
             UserList = usrs;
             ProductList = prods;
             ProductCount = prods.Count;
+            ProductsOutOfStock = new List<int>();
         }
 
         private static void OrderProducts()
@@ -214,8 +216,25 @@ namespace Refactoring
         {
             bool validProductSelected = false;
 
+
             if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1) && (productNumber > 0))
             {
+
+                if (ProductsOutOfStock.Min() < productNumber)
+                {
+                    int actualProductIndex = productNumber;
+
+                    for (int i = 0; i < productNumber + ProductsOutOfStock.Count && i < ProductCount; i++)
+                    {
+
+                        if (ProductList[i].Qty <= 0)
+                        {
+                            actualProductIndex++;
+                        }
+                    }
+
+                    productNumber = actualProductIndex;
+                }
                 validProductSelected = true;
             }
             else
@@ -238,10 +257,18 @@ namespace Refactoring
         {
             Console.WriteLine();
             Console.WriteLine("What would you like to buy?");
+            int visibleProductIndex = 1;
             for (int i = 0; i < ProductCount; i++)
             {
-                Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if (ProductList[i].Qty > 0)
+                {
+                    Product prod = ProductList[i];
+                    Console.WriteLine(visibleProductIndex++ + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                }
+                else
+                {
+                    ProductsOutOfStock.Add(i);
+                }
             }
             Console.WriteLine("Type quit to exit the application");
         }
