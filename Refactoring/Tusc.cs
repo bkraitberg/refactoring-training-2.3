@@ -208,6 +208,13 @@ namespace Refactoring
         private static bool validateProduct(string ProductNumberEntered, out int productNumber )
         {
             bool validProductSelected = false;
+
+            int ProductNumberQuit; 
+            if (ProductNumberEntered.ToLower() == "quit")
+            {
+                ProductNumberQuit = ProductCount + 1; 
+                ProductNumberEntered = ProductNumberQuit.ToString(); 
+            }
             
             if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
             {
@@ -238,7 +245,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
