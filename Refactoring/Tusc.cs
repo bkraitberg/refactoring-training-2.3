@@ -111,7 +111,7 @@ namespace Refactoring
         private static bool VerifyStockOnHand(int SelectedProductNumber, int QuantityOrdered)
         {
             bool stockOnHand = true;
-            if (ProductList[SelectedProductNumber-1].Qty <= QuantityOrdered)
+            if (ProductList[SelectedProductNumber-1].Qty < QuantityOrdered) //The condition is changed
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -197,6 +197,9 @@ namespace Refactoring
 	        {
 	            Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
+                if (ProductNumberEntered!=null) 
+                    if(ProductNumberEntered.Equals("quit")) 
+                        return ProductCount + 1; //(ProductCount + 1) is the code to quit
                 if (validateProduct(ProductNumberEntered, out productNumber))
                 {
                    break;
@@ -209,7 +212,7 @@ namespace Refactoring
         {
             bool validProductSelected = false;
             
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount))
             {
                 validProductSelected = true;
             }
@@ -236,9 +239,11 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
+
+                if(prod.Qty>0)
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to Exit the application");
         }
 
         private static void ShowRemainingBalance()
