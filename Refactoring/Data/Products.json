@@ -30,6 +30,11 @@
     "Quantity": 25
   },
   {
+	"Name": "Figs",
+	"Price": 1.50,
+	"Quantity": 0
+  },
+  {
     "Name": "Nuts",
     "Price": 1.0,
     "Quantity": 1
