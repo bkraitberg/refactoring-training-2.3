@@ -14,6 +14,7 @@ namespace Refactoring
         private static List<Product> ProductList;
         private static User LoggedInUser;
         private static int ProductCount;
+       
 
         public static void Start(List<User> users, List<Product> products)
         {
@@ -197,6 +198,7 @@ namespace Refactoring
 	        {
 	            Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
+                
                 if (validateProduct(ProductNumberEntered, out productNumber))
                 {
                    break;
@@ -215,7 +217,15 @@ namespace Refactoring
             }
             else
             {
-                ShowProductNumberInvalidMessage();
+                if(ProductNumberEntered == "quit")
+                {
+                    productNumber = ProductCount + 1;
+                    validProductSelected = true;
+                }
+                else{
+                    
+                    ShowProductNumberInvalidMessage();
+                }
             }
             return validProductSelected;
         }
@@ -238,7 +248,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
