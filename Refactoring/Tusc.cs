@@ -218,7 +218,7 @@ namespace Refactoring
         {
             bool validProductSelected = false;
             
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount))
+            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount) && ProductList[productNumber-1].Qty > 0)
             {
                 validProductSelected = true;
             }
@@ -233,7 +233,7 @@ namespace Refactoring
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount).ToString());
+            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount).ToString() + ", excluding out of stock items");
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -245,9 +245,12 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if (prod.Qty > 0)
+                {
+                    Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                }
             }
-            Console.WriteLine("Type " + QUIT + " to exit the application");          
+            Console.WriteLine("Type " + QUIT + " to exit the application");
         }
 
         private static void ShowRemainingBalance()
