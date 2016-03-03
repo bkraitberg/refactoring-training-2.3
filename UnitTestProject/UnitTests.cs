@@ -251,6 +251,28 @@ namespace UnitTestProject
             }
         }
 
+        [Test]
+        public void Test_ProductsWithZeroQuantityDoNotAppearInMenu()
+        {
+            // Update data file
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n2\r\n1\r\n" + EXIT_STRING + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsFalse(writer.ToString().Contains(": Chips"));
+            }
+
+        }
+
         private static T DeepCopy<T>(T obj)
         {
             using (MemoryStream stream = new MemoryStream())
