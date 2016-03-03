@@ -36,7 +36,7 @@
   },
   {
     "Name": "Soup",
-    "Price": "1.25",
-    "Quantity":  "50"
+    "Price": 1.25,
+    "Quantity":  50
   }
 ]
