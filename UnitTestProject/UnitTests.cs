@@ -148,7 +148,6 @@ namespace UnitTestProject
                 }
 
                 Assert.IsTrue(writer.ToString().Contains("Purchase cancelled"));
-
             }
         }
 
@@ -258,6 +257,31 @@ namespace UnitTestProject
 
                 Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
                 Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
+            }
+        }
+
+        [Test]
+        public void Test_ProductsWithZeroQuantityDoNotAppearInMenu()
+        {
+            // Update data file
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Single(u => u.Name == "Chips").Qty = 0;
+            string productId = (tempProducts.Find(u => u.Name == "Chips")).Id;
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                // Requirement is only to remove chips from display, not prevent the user from selecting a hidden ID.
+                // Hidden IDs can still be seleted but will result in the 'out of stock' message.
+                Assert.IsTrue(writer.ToString().Contains("Chips is out of stock")); 
             }
         }
 
