@@ -222,7 +222,7 @@ namespace Refactoring
             {
                 var parseResult = Int32.TryParse(ProductNumberEntered, out productNumber);
                 var selectedId = productNumber;
-                if (parseResult && ProductList.Any(p => p.Id == selectedId))
+                if (parseResult && ProductList.Any(p => p.Id == selectedId && p.Qty > 0))
                 {
                     validProductSelected = true;
                 }
@@ -239,7 +239,7 @@ namespace Refactoring
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount + 1).ToString());
+            Console.WriteLine("You must select only products that appear in the menu!");
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -249,9 +249,13 @@ namespace Refactoring
             Console.WriteLine();
             Console.WriteLine("What would you like to buy?");
             for (int i = 0; i < ProductCount; i++)
-            {
+            { 
                 Product prod = ProductList[i];
-                Console.WriteLine(prod.Id + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if (prod.Qty > 0)
+                {                  
+                    Console.WriteLine(prod.Id + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                }
+
             }
 
             Console.WriteLine(QuitMenuMessage);
