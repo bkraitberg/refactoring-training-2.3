@@ -18,6 +18,7 @@ namespace UnitTestProject
         private List<Product> originalProducts;
 
         private string EXIT_NUMBER = "quit";
+        private string TEST_ProductID = "pChips";
 
         [SetUp]
         public void Test_Initialize()
@@ -53,7 +54,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + TEST_ProductID + "\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -69,7 +70,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + TEST_ProductID + "\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -137,7 +138,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + TEST_ProductID + "\r\n0\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -160,7 +161,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + TEST_ProductID + "\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -182,7 +183,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + TEST_ProductID + "\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -198,18 +199,19 @@ namespace UnitTestProject
         {
             // Update data file
             List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Soup").Single().Qty = 1;
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 1;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + TEST_ProductID + "\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
                     Tusc.Start(users, tempProducts);
                 }
+                var test = writer.ToString();
                 Assert.IsTrue(writer.ToString().Contains("You bought 1 Chips"));
             }
         }
