@@ -14,7 +14,8 @@ namespace UnitTestProject
     {
         private List<User> users;
         private List<User> originalUsers;
-        private List<Product> products;
+        private List<Product> productList;
+        private Dictionary<string, Product> products;
         private List<Product> originalProducts;
 
         private string EXIT_STRING = "quit";
@@ -28,7 +29,12 @@ namespace UnitTestProject
 
             // Load products from data file
             originalProducts = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(@"Data/Products.json"));
-            products = DeepCopy<List<Product>>(originalProducts);
+            productList = DeepCopy<List<Product>>(originalProducts);
+            products = new Dictionary<string, Product>();
+            foreach (Product product in productList)
+            {
+                products.Add(product.Id, product);
+            }
         }
 
         [TearDown]
@@ -42,7 +48,12 @@ namespace UnitTestProject
             // Restore products
             string json2 = JsonConvert.SerializeObject(originalProducts, Formatting.Indented);
             File.WriteAllText(@"Data/Products.json", json2);
-            products = DeepCopy<List<Product>>(originalProducts);
+            productList = DeepCopy<List<Product>>(originalProducts);
+            products = new Dictionary<string, Product>();
+            foreach (Product product in productList)
+            {
+                products.Add(product.Id, product);
+            }
         }
 
         [Test]
@@ -174,8 +185,13 @@ namespace UnitTestProject
         public void Test_ErrorOccursWhenProductOutOfStock()
         {
             // Update data file
-            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            List<Product> tempProductList = DeepCopy<List<Product>>(originalProducts);
+            tempProductList.Where(u => u.Name == "Chips").Single().Qty = 0;
+            Dictionary<string, Product> tempProducts = new Dictionary<string, Product>();
+            foreach (Product product in tempProductList)
+            {
+                tempProducts.Add(product.Id, product);
+            }
 
             using (var writer = new StringWriter())
             {
@@ -233,8 +249,13 @@ namespace UnitTestProject
         public void Test_UserCanPurchaseProductWhenOnlyOneInStock()
         {
             // Update data file
-            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 1;
+            List<Product> tempProductList = DeepCopy<List<Product>>(originalProducts);
+            tempProductList.Where(u => u.Name == "Chips").Single().Qty = 1;
+            Dictionary<string, Product> tempProducts = new Dictionary<string, Product>();
+            foreach (Product product in tempProductList)
+            {
+                tempProducts.Add(product.Id, product);
+            }
 
             using (var writer = new StringWriter())
             {
