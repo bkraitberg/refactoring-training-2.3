@@ -14,6 +14,8 @@ namespace Refactoring
         private static List<Product> ProductList;
         private static User LoggedInUser;
         private static int ProductCount;
+        private const string EXIT_TUSC_TEXT = "quit";
+        private const int APPLICATION_EXIT_CODE = -1;
 
         public static void Start(List<User> users, List<Product> products)
         {
@@ -50,7 +52,7 @@ namespace Refactoring
             {
                 ShowProductList();
                 SelectedProductNumber = GetValidUserProductSelection();
-                if (SelectedProductNumber == ProductList.Count + 1)
+                if (SelectedProductNumber == APPLICATION_EXIT_CODE)
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -197,7 +199,12 @@ namespace Refactoring
 	        {
 	            Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
-                if (validateProduct(ProductNumberEntered, out productNumber))
+                if (userWantsToExit(ProductNumberEntered))
+                {
+                    productNumber = APPLICATION_EXIT_CODE;
+                    break;
+                }
+                else if (validateProduct(ProductNumberEntered, out productNumber))
                 {
                    break;
                 }
@@ -209,7 +216,7 @@ namespace Refactoring
         {
             bool validProductSelected = false;
             
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount))
             {
                 validProductSelected = true;
             }
@@ -220,6 +227,18 @@ namespace Refactoring
             return validProductSelected;
         }
 
+        private static bool userWantsToExit(string ProductEntered)
+        {
+            bool userWantsToExit = false;
+
+            if (ProductEntered.ToLower() == EXIT_TUSC_TEXT)
+                {
+                userWantsToExit = true;
+                }
+            
+            return userWantsToExit;
+        }
+        
         private static void ShowProductNumberInvalidMessage()
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -238,7 +257,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application.");
         }
 
         private static void ShowRemainingBalance()
