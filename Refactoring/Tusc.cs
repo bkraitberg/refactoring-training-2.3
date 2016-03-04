@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace Refactoring
 {
@@ -14,6 +15,9 @@ namespace Refactoring
         private static List<Product> ProductList;
         private static User LoggedInUser;
         private static int ProductCount;
+        
+        delegate bool del(string input);
+        static del ExitEntered = input => input.ToLower() == "quit";
 
         public static void Start(List<User> users, List<Product> products)
         {
@@ -50,7 +54,7 @@ namespace Refactoring
             {
                 ShowProductList();
                 string UserInput = GetUserInput();
-                if (UserInput == "quit")
+                if (ExitEntered(UserInput))
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -198,7 +202,7 @@ namespace Refactoring
 	        {
 	            Console.WriteLine("Enter the product number:");
                 UserInputEntered = Console.ReadLine();
-                if (UserInputEntered.ToLower() == "quit")
+                if (ExitEntered(UserInputEntered))
                 {
                     break;
                 }
