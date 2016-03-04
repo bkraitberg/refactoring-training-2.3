@@ -39,8 +39,16 @@ namespace Refactoring
         private static void InitializeMemberVariables(List<User> usrs, List<Product> prods)
         {
             UserList = usrs;
-            ProductList = prods;
             ProductCount = prods.Count;
+
+            ProductList = new List<Product>();
+            foreach (Product product in prods)
+            {
+                if (product.Qty > 0)
+                {
+                    ProductList.Add(product);
+                }
+            }
         }
 
         private static void OrderProducts()
