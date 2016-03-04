@@ -172,18 +172,18 @@ namespace UnitTestProject
         }
 
         [Test]
-        public void Test_ErrorOccursWhenProductOutOfStock()
+        public void Test_ErrorOccursWhenProductBoughtMoreThanAvaiable()
         {
             // Update data file
             List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 1;
             String productId = tempProducts.Where(u => u.Name == "Chips").Single().Id;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId +"\r\n1\r\n" + EXIT_VALUE + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId +"\r\n2\r\n" + EXIT_VALUE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -251,6 +251,28 @@ namespace UnitTestProject
 
                 Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
                 Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
+            }
+        }
+
+        [Test]
+        public void Test_ProductsWithZeroQuantityDoNotAppearInMenu()
+        {
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            String productId = tempProducts.Where(u => u.Name == "Chips").Single().Id;
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + EXIT_VALUE + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsFalse(writer.ToString().Contains(": Chips"));
             }
         }
 
