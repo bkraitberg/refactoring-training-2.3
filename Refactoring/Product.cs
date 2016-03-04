@@ -16,5 +16,12 @@ namespace Refactoring
         public double Price;
         [JsonProperty("Quantity")]
         public int Qty;
+        [JsonProperty("Id")]
+        public int Id;
+
+        public bool HasStock()
+        {
+            return Qty > 0;
+        }
     }
 }
