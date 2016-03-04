@@ -1,9 +1,15 @@
 [
   {
+	"Id": "soup",
+    "Name": "Soup",
+    "Price": 1.25,
+    "Quantity": 50
+  },
+  {
 	"Id": "chips",
     "Name": "Chips",
     "Price": 1.49,
-    "Quantity": 50
+    "Quantity": 0
   },
   {
 	"Id": "cookies",
@@ -40,11 +46,5 @@
     "Name": "Nuts",
     "Price": 1.0,
     "Quantity": 1
-  },
-  {
-	"Id": "soup",
-    "Name": "Soup",
-    "Price": 1.25,
-    "Quantity": 50
   }
 ]

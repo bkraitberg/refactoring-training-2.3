@@ -251,6 +251,26 @@ namespace UnitTestProject
             }
         }
 
+        [Test]
+        public void Test_ProductsWithZeroQuantityDoNotAppearInMenu()
+        {
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + EXIT_COMMAND + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, products);
+                }
+
+                Assert.IsFalse(writer.ToString().Contains(": Chips"));
+
+            }
+        }
+
+
         private static T DeepCopy<T>(T obj)
         {
             using (MemoryStream stream = new MemoryStream())
