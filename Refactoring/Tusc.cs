@@ -10,6 +10,8 @@ namespace Refactoring
 {
     public class Tusc
     {
+        private const int EXIT = -1;
+
         private static List<User> UserList;
         private static List<Product> ProductList;
         private static User LoggedInUser;
@@ -37,8 +39,16 @@ namespace Refactoring
         private static void InitializeMemberVariables(List<User> usrs, List<Product> prods)
         {
             UserList = usrs;
-            ProductList = prods;
             ProductCount = prods.Count;
+
+            ProductList = new List<Product>();
+            foreach (Product product in prods)
+            {
+                if (product.Qty > 0)
+                {
+                    ProductList.Add(product);
+                }
+            }
         }
 
         private static void OrderProducts()
@@ -50,7 +60,7 @@ namespace Refactoring
             {
                 ShowProductList();
                 SelectedProductNumber = GetValidUserProductSelection();
-                if (SelectedProductNumber == ProductList.Count + 1)
+                if (SelectedProductNumber == EXIT)
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -111,7 +121,7 @@ namespace Refactoring
         private static bool VerifyStockOnHand(int SelectedProductNumber, int QuantityOrdered)
         {
             bool stockOnHand = true;
-            if (ProductList[SelectedProductNumber-1].Qty <= QuantityOrdered)
+            if (ProductList[SelectedProductNumber-1].Qty < QuantityOrdered)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -193,13 +203,19 @@ namespace Refactoring
         private static int GetValidUserProductSelection()
         {
             int productNumber;
+            String quit = "quit";
             while (true)
 	        {
 	            Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
-                if (validateProduct(ProductNumberEntered, out productNumber))
+                if (ProductNumberEntered.Equals(quit))
                 {
-                   break;
+                    productNumber = EXIT;
+                    break;
+                }
+                else if (validateProduct(ProductNumberEntered, out productNumber))
+                {
+                    break;
                 }
 	        }
             return productNumber;
@@ -233,12 +249,11 @@ namespace Refactoring
         {
             Console.WriteLine();
             Console.WriteLine("What would you like to buy?");
-            for (int i = 0; i < ProductCount; i++)
+            foreach (Product product in ProductList)
             {
-                Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                Console.WriteLine(product.Id + ": " + product.Name + " (" + product.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
