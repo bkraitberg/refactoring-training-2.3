@@ -17,7 +17,11 @@ namespace UnitTestProject
         private List<Product> products;
         private List<Product> originalProducts;
 
-        private string EXIT_TEXT = "quit";
+        private const string EXIT_TEXT = "quit";
+        private const string MENU_OPTION_CHIPS = "c1";
+        private const string PRESS_ENTER = "\r\n";
+        private const string JASON_LOGIN_ENTRY = "Jason" + PRESS_ENTER + "sfa" + PRESS_ENTER;
+
 
         [SetUp]
         public void Test_Initialize()
@@ -52,7 +56,15 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_TEXT + "\r\n\r\n"))
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    MENU_OPTION_CHIPS +
+                    PRESS_ENTER +
+                    "1" +
+                    PRESS_ENTER +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -68,7 +80,15 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_TEXT + "\r\n\r\n"))
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    MENU_OPTION_CHIPS +
+                    PRESS_ENTER +
+                    "1" +
+                    PRESS_ENTER +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -84,7 +104,9 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Joel\r\n"))
+                using (var reader = new StringReader(
+                    "Joel" +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -102,7 +124,9 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("\r\n\r\n"))
+                using (var reader = new StringReader(
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -118,7 +142,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfb\r\n"))
+                using (var reader = new StringReader("Jason" + PRESS_ENTER + "sfb" + PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -136,7 +160,15 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + EXIT_TEXT + "\r\n\r\n"))
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    MENU_OPTION_CHIPS +
+                    PRESS_ENTER +
+                    "0" +
+                    PRESS_ENTER +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -159,7 +191,15 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_TEXT + "\r\n\r\n"))
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    MENU_OPTION_CHIPS +
+                    PRESS_ENTER +
+                    "1" +
+                    PRESS_ENTER +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -181,7 +221,15 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_TEXT + "\r\n\r\n"))
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    MENU_OPTION_CHIPS +
+                    PRESS_ENTER +
+                    "1" +
+                    PRESS_ENTER +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -199,7 +247,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n" + EXIT_TEXT + "\r\n\r\n"))
+                using (var reader = new StringReader(JASON_LOGIN_ENTRY + EXIT_TEXT + PRESS_ENTER + PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -221,7 +269,15 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_TEXT + "\r\n\r\n"))
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    MENU_OPTION_CHIPS +
+                    PRESS_ENTER +
+                    "1" +
+                    PRESS_ENTER +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -239,7 +295,11 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\nquit\r\n\r\n"))
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
