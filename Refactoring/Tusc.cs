@@ -215,6 +215,11 @@ namespace Refactoring
             {
                 validProductSelected = true;
             }
+            else if( ProductNumberEntered.ToLower().Equals("quit"))
+            {
+                productNumber = ProductCount + 1;
+                validProductSelected = true;
+            }
             else
             {
                 ShowProductNumberInvalidMessage();
@@ -240,7 +245,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
