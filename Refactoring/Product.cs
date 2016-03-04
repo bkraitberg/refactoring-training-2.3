@@ -16,5 +16,7 @@ namespace Refactoring
         public double Price;
         [JsonProperty("Quantity")]
         public int Qty;
+        [JsonProperty("ProductId")]
+        public string ProductId;
     }
 }

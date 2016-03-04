@@ -14,6 +14,8 @@ namespace Refactoring
         private static List<Product> ProductList;
         private static User LoggedInUser;
         private static int ProductCount;
+        
+        public static string EXIT_APPLICATION { get { return "quit"; } }
 
         public static void Start(List<User> users, List<Product> products)
         {
@@ -111,7 +113,7 @@ namespace Refactoring
         private static bool VerifyStockOnHand(int SelectedProductNumber, int QuantityOrdered)
         {
             bool stockOnHand = true;
-            if (ProductList[SelectedProductNumber-1].Qty <= QuantityOrdered)
+            if (ProductList[SelectedProductNumber-1].Qty < QuantityOrdered)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -205,26 +207,64 @@ namespace Refactoring
             return productNumber;
         }
 
-        private static bool validateProduct(string ProductNumberEntered, out int productNumber )
+        private static bool validateProduct(string ProductIdEntered, out int productNumber )
         {
             bool validProductSelected = false;
-            
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
-            {
-                validProductSelected = true;
-            }
-            else
+
+            validProductSelected = IsProductIdValid(ProductIdEntered, out productNumber);
+
+            if( !validProductSelected )
             {
                 ShowProductNumberInvalidMessage();
             }
+
             return validProductSelected;
+        }
+
+        private static bool IsProductIdValid(string ProductIdEntered, out int productNumber)
+        {
+            bool validProduct = false;
+            productNumber = -1;
+
+            if (IsExitApplicationEntered(ProductIdEntered, out productNumber))
+            {
+                validProduct = true;
+            }
+            else
+            {
+                for (int i = 0; i < ProductList.Count; i++)
+                {
+                    if (ProductList[i].ProductId.Equals(ProductIdEntered))
+                    {
+                        validProduct = true;
+                        productNumber = i + 1;
+                        break;
+                    }
+                }
+            }
+
+            return validProduct;
+        }
+
+        private static bool IsExitApplicationEntered(string ProductIdEntered, out int exitCode)
+        {
+            bool exitCodeEntered = false;
+            exitCode = -1;
+
+            if( ProductIdEntered.Equals(EXIT_APPLICATION))
+            {
+                exitCodeEntered = true;
+                exitCode = ProductList.Count + 1;
+            }
+
+            return exitCodeEntered;
         }
 
         private static void ShowProductNumberInvalidMessage()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount + 1).ToString());
+            Console.WriteLine("Valid product codes must be entered");
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -236,9 +276,13 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+
+                if (prod.Qty > 0)
+                {
+                    Console.WriteLine(prod.ProductId + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                }
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
@@ -345,8 +389,6 @@ namespace Refactoring
             }
             return UserIsFound;
         }
-
-        
 
         private static void ShowWelcomeMessage()
         {
