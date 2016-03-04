@@ -17,8 +17,6 @@ namespace UnitTestProject
         private List<Product> products;
         private List<Product> originalProducts;
 
-        private int EXIT_NUMBER = 0;
-
         [SetUp]
         public void Test_Initialize()
         {
@@ -29,8 +27,6 @@ namespace UnitTestProject
             // Load products from data file
             originalProducts = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(@"Data/Products.json"));
             products = DeepCopy<List<Product>>(originalProducts);
-
-            EXIT_NUMBER = products.Count + 1;
         }
 
         [TearDown]
@@ -50,11 +46,13 @@ namespace UnitTestProject
         [Test]
         public void Test_StartingTuscFromMainDoesNotThrowAnException()
         {
+            string productId = (originalProducts.Find(u => u.Name == "Chips")).Id; 
+            
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -66,11 +64,13 @@ namespace UnitTestProject
         [Test]
         public void Test_TuscDoesNotThrowAnException()
         {
+            string productId = (originalProducts.Find(u => u.Name == "Chips")).Id; 
+            
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -134,11 +134,13 @@ namespace UnitTestProject
         [Test]
         public void Test_UserCanCancelPurchase()
         {
+            string productId = (originalProducts.Find(u => u.Name == "Chips")).Id;
+
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n0\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -146,7 +148,6 @@ namespace UnitTestProject
                 }
 
                 Assert.IsTrue(writer.ToString().Contains("Purchase cancelled"));
-
             }
         }
 
@@ -155,13 +156,15 @@ namespace UnitTestProject
         {
             // Update data file
             List<User> tempUsers = DeepCopy<List<User>>(originalUsers);
-            tempUsers.Where(u => u.UserName == "Jason").Single().Balance = 0.0;
+            tempUsers.Single(u => u.UserName == "Jason").Balance = 0.0;
+
+            string productId = (originalProducts.Find(u => u.Name == "Chips")).Id;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -177,13 +180,14 @@ namespace UnitTestProject
         {
             // Update data file
             List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            tempProducts.Single(u => u.Name == "Chips").Qty = 0;
+            string productId = (tempProducts.Find(u => u.Name == "Chips")).Id;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -195,41 +199,91 @@ namespace UnitTestProject
         }
 
         [Test]
-        public void Test_ProductListContainsExitItem()
+        public void Test_UserCanPurchaseProductWhenOnlyOneInStock()
         {
+            // Update data file
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Single(u => u.Name == "Chips").Qty = 1;
+            string productId = (tempProducts.Find(u => u.Name == "Chips")).Id;
+
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsTrue(writer.ToString().Contains("You bought 1 Chips"));
+            }
+        }
+
+        [Test]
+        public void Test_ProductListContainsExitItem()
+        {
+            string productId = (originalProducts.Find(u => u.Name == "Chips")).Id; 
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
                     Tusc.Start(users, products);
                 }
 
-                Assert.IsTrue(writer.ToString().Contains("" + EXIT_NUMBER + ": Exit"));
+                Assert.IsTrue(writer.ToString().Contains(Tusc.QuitCommand));
             }
         }
 
-        //[Test]
-        //public void Test_UserCanExitByEnteringQuit()
-        //{
-        //    using (var writer = new StringWriter())
-        //    {
-        //        Console.SetOut(writer);
+        [Test]
+        public void Test_UserCanExitByEnteringQuit()
+        {
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
 
-        //        using (var reader = new StringReader("Jason\r\nsfa\r\nquit\r\n\r\n"))
-        //        {
-        //            Console.SetIn(reader);
+                using (var reader = new StringReader("Jason\r\nsfa\r\nquit\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
 
-        //            Tusc.Start(users, products);
-        //        }
+                    Tusc.Start(users, products);
+                }
 
-        //        Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
-        //        Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
-        //    }
-        //}
+                Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
+                Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
+            }
+        }
+
+        [Test]
+        public void Test_ProductsWithZeroQuantityDoNotAppearInMenu()
+        {
+            // Update data file
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Single(u => u.Name == "Chips").Qty = 0;
+            string productId = (tempProducts.Find(u => u.Name == "Chips")).Id;
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                // Requirement is only to remove chips from display, not prevent the user from selecting a hidden ID.
+                // Hidden IDs can still be seleted but will result in the 'out of stock' message.
+                Assert.IsTrue(writer.ToString().Contains("Chips is out of stock")); 
+            }
+        }
 
         private static T DeepCopy<T>(T obj)
         {
