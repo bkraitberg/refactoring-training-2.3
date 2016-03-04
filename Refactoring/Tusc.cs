@@ -41,7 +41,7 @@ namespace Refactoring
         private static void InitializeMemberVariables(List<User> usrs, List<Product> prods)
         {
             UserList = usrs;
-            ProductList = prods;
+            ProductList = prods.FindAll(product=>product.Qty>0);
             ProductCount = prods.Count;
         }
 
@@ -215,7 +215,7 @@ namespace Refactoring
             return  UserInputEntered;
         }
 
-        private static bool validateProduct(string ProductNumberEntered)//, out int productNumber )
+        private static bool validateProduct(string ProductNumberEntered)
         {
             bool validProductSelected = false;
             int productNumber;
@@ -244,9 +244,8 @@ namespace Refactoring
         {
             Console.WriteLine();
             Console.WriteLine("What would you like to buy?");
-            for (int i = 0; i < ProductCount; i++)
+            foreach(Product prod in ProductList)
             {
-                Product prod = ProductList[i];
                 Console.WriteLine(prod.id + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
             Console.WriteLine("Type quit to exit the application");
