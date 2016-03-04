@@ -43,25 +43,25 @@ namespace Refactoring
 
         private static void OrderProducts()
         {
-            int? SelectedProductNumber = 0;
+            int? SelectedProductId = 0;
             int QuantityOrdered;
 
-            while (SelectedProductNumber != null && SelectedProductNumber.HasValue)
+            while (SelectedProductId != null && SelectedProductId.HasValue)
             {
                 ShowProductList();
-                SelectedProductNumber = GetValidUserProductSelection();
+                SelectedProductId = GetValidUserProductSelection();
 
-                if (SelectedProductNumber != null && SelectedProductNumber.HasValue)
+                if (SelectedProductId != null && SelectedProductId.HasValue)
                 {
-                    int productNumber = SelectedProductNumber.Value;
+                    int productId = SelectedProductId.Value;
                     Console.WriteLine();
-                    Console.WriteLine("You want to buy: " + ProductList[productNumber - 1].Name);
+                    Console.WriteLine("You want to buy: " + ProductList[productId].Name);
                     Console.WriteLine("Your balance is " + LoggedInUser.Balance.ToString("C"));
 
                     QuantityOrdered = GetValidUserProductQuantity();
-                    if (QuantityOrdered > 0 && VerifyUserFundsForSelectedPurchase(productNumber, QuantityOrdered) && VerifyStockOnHand(productNumber, QuantityOrdered))
+                    if (QuantityOrdered > 0 && VerifyUserFundsForSelectedPurchase(productId, QuantityOrdered) && VerifyStockOnHand(productId, QuantityOrdered))
                     {
-                        OrderProduct(productNumber, QuantityOrdered);
+                        OrderProduct(productId, QuantityOrdered);
                         UpdateCurrentUsersBalance();
                     }
                     else
@@ -80,51 +80,51 @@ namespace Refactoring
             Console.ResetColor();
         }
 
-        private static void OrderProduct(int SelectedProductNumber, int QuantityOrdered)
+        private static void OrderProduct(int SelectedProductId, int QuantityOrdered)
         {
-            UpdateBalance(SelectedProductNumber, QuantityOrdered);
-            RemoveItemsFromInventory(SelectedProductNumber, QuantityOrdered);
-            ShowOrderConfirmationMessage(SelectedProductNumber, QuantityOrdered);
+            UpdateBalance(SelectedProductId, QuantityOrdered);
+            RemoveItemsFromInventory(SelectedProductId, QuantityOrdered);
+            ShowOrderConfirmationMessage(SelectedProductId, QuantityOrdered);
         }
 
-        private static void UpdateBalance(int SelectedProductNumber, int QuantityOrdered)
+        private static void UpdateBalance(int SelectedProductId, int QuantityOrdered)
         {
-            LoggedInUser.Balance =  LoggedInUser.Balance - (ProductList[SelectedProductNumber-1].Price * QuantityOrdered);
+            LoggedInUser.Balance =  LoggedInUser.Balance - (ProductList[SelectedProductId].Price * QuantityOrdered);
         }
 
-        private static void RemoveItemsFromInventory(int SelectedProductNumber, int QuantityOrdered)
+        private static void RemoveItemsFromInventory(int SelectedProductId, int QuantityOrdered)
         {
-            ProductList[SelectedProductNumber-1].Qty = ProductList[SelectedProductNumber-1].Qty - QuantityOrdered;
+            ProductList[SelectedProductId].Qty = ProductList[SelectedProductId].Qty - QuantityOrdered;
         }
 
-        private static void ShowOrderConfirmationMessage(int SelectedProductNumber, int QuantityOrdered)
+        private static void ShowOrderConfirmationMessage(int SelectedProductId, int QuantityOrdered)
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("You bought " + QuantityOrdered + " " + ProductList[SelectedProductNumber-1].Name);
+            Console.WriteLine("You bought " + QuantityOrdered + " " + ProductList[SelectedProductId].Name);
             Console.WriteLine("Your new balance is " + LoggedInUser.Balance.ToString("C"));
             Console.ResetColor();
         }
 
-        private static bool VerifyStockOnHand(int SelectedProductNumber, int QuantityOrdered)
+        private static bool VerifyStockOnHand(int SelectedProductId, int QuantityOrdered)
         {
             bool stockOnHand = true;
-            if (ProductList[SelectedProductNumber-1].Qty < QuantityOrdered)
+            if (ProductList[SelectedProductId].Qty < QuantityOrdered)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine();
-                Console.WriteLine("Sorry, " + ProductList[SelectedProductNumber-1].Name + " is out of stock");
+                Console.WriteLine("Sorry, " + ProductList[SelectedProductId].Name + " is out of stock");
                 Console.ResetColor();
                 stockOnHand = false;
             }
             return stockOnHand;
         }
 
-        private static bool VerifyUserFundsForSelectedPurchase(int SelectedProductNumber, int QuantityOrdered)
+        private static bool VerifyUserFundsForSelectedPurchase(int SelectedProductId, int QuantityOrdered)
         {
             bool fundsAvailable = true;
-            if ((LoggedInUser.Balance - (ProductList[SelectedProductNumber-1].Price * QuantityOrdered)) < 0)
+            if ((LoggedInUser.Balance - (ProductList[SelectedProductId].Price * QuantityOrdered)) < 0)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -242,7 +242,7 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                Console.WriteLine(prod.Id + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
             Console.WriteLine("Type quit to exit the application");
         }
