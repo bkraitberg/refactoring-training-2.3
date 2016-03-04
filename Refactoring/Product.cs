@@ -12,6 +12,8 @@ namespace Refactoring
     {
         [JsonProperty("Name")]
         public string Name;
+        [JsonProperty("Id")]
+        public int id;
         [JsonProperty("Price")]
         public double Price;
         [JsonProperty("Quantity")]
