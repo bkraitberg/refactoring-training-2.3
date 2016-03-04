@@ -196,13 +196,13 @@ namespace UnitTestProject
         {
             // Update data file
             List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 2;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n0\r\n1\r\n" + EXIT_STRING + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n0\r\n3\r\n" + EXIT_STRING + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -250,6 +250,28 @@ namespace UnitTestProject
             }
         }
 
+        [Test]
+        public void Test_ProductsWithZeroQuantityDoNotAppearInMenu()
+        {
+            // Update data file
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + EXIT_STRING + "\r\n\r\n"))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsFalse(writer.ToString().Contains(": Chips"));
+            }
+        }
+
         private static T DeepCopy<T>(T obj)
         {
             using (MemoryStream stream = new MemoryStream())
@@ -261,5 +283,7 @@ namespace UnitTestProject
                 return (T)formatter.Deserialize(stream);
             }
         }
+
+
     }
 }
