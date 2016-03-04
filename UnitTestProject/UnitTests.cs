@@ -17,7 +17,7 @@ namespace UnitTestProject
         private List<Product> products;
         private List<Product> originalProducts;
 
-        private int EXIT_NUMBER = -1;
+        private string EXIT_VALUE = "quit";
 
         [SetUp]
         public void Test_Initialize()
@@ -52,7 +52,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_VALUE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -68,7 +68,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_VALUE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -136,7 +136,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + EXIT_VALUE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -159,7 +159,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_VALUE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -181,7 +181,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_VALUE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -203,7 +203,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_VALUE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -221,7 +221,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_VALUE + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 

@@ -199,24 +199,24 @@ namespace Refactoring
 	        {
 	            Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
-                if (validateProduct(ProductNumberEntered, out productNumber))
-                {
-                   break;
-                }
-                else if (ProductNumberEntered.Equals(QUIT_APPLICATION_INPUT, StringComparison.InvariantCultureIgnoreCase))
+                if (ProductNumberEntered.Equals(QUIT_APPLICATION_INPUT, StringComparison.InvariantCultureIgnoreCase))
                 {
                     productNumber = QUIT_INDEX;
+                    break;
+                }
+                else if (ValidateProduct(ProductNumberEntered, out productNumber))
+                {
                     break;
                 }
 	        }
             return productNumber;
         }
 
-        private static bool validateProduct(string ProductNumberEntered, out int productNumber )
+        private static bool ValidateProduct(string ProductNumberEntered, out int productNumber )
         {
             bool validProductSelected = false;
-            
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+
+            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (ProductNumberMatchesProductId(ProductNumberEntered)))
             {
                 validProductSelected = true;
             }
@@ -227,11 +227,20 @@ namespace Refactoring
             return validProductSelected;
         }
 
+        private static bool ProductNumberMatchesProductId(string productNumber)
+        {
+            foreach (Product product in ProductList)
+            {
+                if (product.Id.ToString() == productNumber) return true;
+            }
+            return false;
+        }
+
         private static void ShowProductNumberInvalidMessage()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount + 1).ToString());
+            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount).ToString());
             Console.WriteLine("");
             Console.ResetColor();
         }
