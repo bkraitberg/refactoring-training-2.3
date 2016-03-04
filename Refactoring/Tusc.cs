@@ -37,8 +37,10 @@ namespace Refactoring
         private static void InitializeMemberVariables(List<User> usrs, List<Product> prods)
         {
             UserList = usrs;
-            ProductList = prods;
-            ProductCount = prods.Count;
+            ProductList = (from products in prods
+                           where products.Qty > 0
+                           select products).ToList<Product>();
+            ProductCount = ProductList.Count;
         }
 
         private static void OrderProducts()
@@ -116,7 +118,7 @@ namespace Refactoring
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine();
-                Console.WriteLine("Sorry, " + SelectedProduct.Name + " is out of stock");
+                Console.WriteLine("Sorry, " + SelectedProduct.Name + " has insuffcient quantity for that order.");
                 Console.ResetColor();
                 stockOnHand = false;
             }
@@ -168,6 +170,15 @@ namespace Refactoring
         }
 
         private static void ShowInvalidQuantitySelectedMessage()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("");
+            Console.WriteLine("Selected quantity must be numeric and greater than 0");
+            Console.WriteLine("");
+            Console.ResetColor();
+        }
+
+        private static void ShowTooManyQuantitySelectedMessage()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");

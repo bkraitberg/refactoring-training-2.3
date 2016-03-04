@@ -39,7 +39,7 @@
   "Id": "N01",
     "Name": "Nuts",
     "Price": 1.0,
-    "Quantity": 1
+    "Quantity": 0
   },
   {
   "Id": "S01",
