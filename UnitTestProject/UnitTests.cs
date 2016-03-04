@@ -211,11 +211,11 @@ namespace UnitTestProject
         }
 
         [Test]
-        public void Test_ErrorOccursWhenProductOutOfStock()
+        public void Test_ErrorOccursWhenUserTriesToPurchaseMoreItemsThanExist()
         {
             // Update data file
             List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 2;
 
             using (var writer = new StringWriter())
             {
@@ -225,7 +225,7 @@ namespace UnitTestProject
                     JASON_LOGIN_ENTRY +
                     MENU_OPTION_CHIPS +
                     PRESS_ENTER +
-                    "1" +
+                    "3" +
                     PRESS_ENTER +
                     EXIT_TEXT +
                     PRESS_ENTER +
@@ -236,7 +236,7 @@ namespace UnitTestProject
                     Tusc.Start(users, tempProducts);
                 }
 
-                Assert.IsTrue(writer.ToString().Contains("is out of stock"));
+                Assert.IsFalse(writer.ToString().Contains("You bought 3 Chips"));
             }
         }
 
@@ -308,6 +308,31 @@ namespace UnitTestProject
 
                 Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
                 Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
+            }
+        }
+
+        [Test]
+        public void Test_ProductsWithZeroQuantityDoNotAppearInMenu()
+        {
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsFalse(writer.ToString().Contains(": Chips"));
             }
         }
 

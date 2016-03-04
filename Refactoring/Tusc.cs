@@ -209,12 +209,16 @@ namespace Refactoring
 
         private static bool IsValidProductId(string productIdEntered)
         {
-            return ProductList.Any(p => p.Id == productIdEntered);
+            var displayableProducts = GetDisplayableProducts();
+
+            return displayableProducts.Any(p => p.Id == productIdEntered);
         }
 
         private static Product GetProductById(string productIdEntered)
         {
-            return ProductList.First(p => p.Id == productIdEntered);
+            var displayableProducts = GetDisplayableProducts();
+
+            return displayableProducts.First(p => p.Id == productIdEntered);
         }
 
         private static void ShowProductNumberInvalidMessage()
@@ -230,12 +234,20 @@ namespace Refactoring
         {
             Console.WriteLine();
             Console.WriteLine("What would you like to buy?");
-            for (int i = 0; i < ProductCount; i++)
+
+            var displayableProducts = GetDisplayableProducts();
+
+            foreach (var product in displayableProducts)
             {
-                Product prod = ProductList[i];
-                Console.WriteLine("{0}: {1} ({2})", prod.Id, prod.Name, prod.Price.ToString("C"));
+                Console.WriteLine("{0}: {1} ({2})", product.Id, product.Name, product.Price.ToString("C"));
             }
+
             Console.WriteLine("Type quit to exit the application");
+        }
+
+        private static List<Product> GetDisplayableProducts()
+        {
+            return ProductList.Where(p => p.Qty > 0).ToList();
         }
 
         private static void ShowRemainingBalance()
