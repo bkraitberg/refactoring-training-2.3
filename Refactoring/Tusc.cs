@@ -14,6 +14,8 @@ namespace Refactoring
         private static List<Product> ProductList;
         private static User LoggedInUser;
         private static int ProductCount;
+        private const string QUIT_APPLICATION_INPUT = "quit";
+        private const int QUIT_INDEX = -1;
 
         public static void Start(List<User> users, List<Product> products)
         {
@@ -50,7 +52,7 @@ namespace Refactoring
             {
                 ShowProductList();
                 SelectedProductNumber = GetValidUserProductSelection();
-                if (SelectedProductNumber == ProductList.Count + 1)
+                if (SelectedProductNumber == QUIT_INDEX)
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -201,6 +203,11 @@ namespace Refactoring
                 {
                    break;
                 }
+                else if (ProductNumberEntered.Equals(QUIT_APPLICATION_INPUT, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    productNumber = QUIT_INDEX;
+                    break;
+                }
 	        }
             return productNumber;
         }
@@ -238,7 +245,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application.");
         }
 
         private static void ShowRemainingBalance()
