@@ -207,31 +207,64 @@ namespace Refactoring
             return productNumber;
         }
 
-        private static bool validateProduct(string ProductNumberEntered, out int productNumber )
+        private static bool validateProduct(string ProductIdEntered, out int productNumber )
         {
             bool validProductSelected = false;
-            
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
-            {
-                validProductSelected = true;
-            }
-            else if (ProductNumberEntered.Equals(EXIT_APPLICATION))
-            {
-                validProductSelected = true;
-                productNumber = ProductCount + 1;
-            }
-            else
+
+            validProductSelected = IsProductIdValid(ProductIdEntered, out productNumber);
+
+            if( !validProductSelected )
             {
                 ShowProductNumberInvalidMessage();
             }
+
             return validProductSelected;
+        }
+
+        private static bool IsProductIdValid(string ProductIdEntered, out int productNumber)
+        {
+            bool validProduct = false;
+            productNumber = -1;
+
+            if (IsExitApplicationEntered(ProductIdEntered, out productNumber))
+            {
+                validProduct = true;
+            }
+            else
+            {
+                for (int i = 0; i < ProductList.Count; i++)
+                {
+                    if (ProductList[i].ProductId.Equals(ProductIdEntered))
+                    {
+                        validProduct = true;
+                        productNumber = i + 1;
+                        break;
+                    }
+                }
+            }
+
+            return validProduct;
+        }
+
+        private static bool IsExitApplicationEntered(string ProductIdEntered, out int exitCode)
+        {
+            bool exitCodeEntered = false;
+            exitCode = -1;
+
+            if( ProductIdEntered.Equals(EXIT_APPLICATION))
+            {
+                exitCodeEntered = true;
+                exitCode = ProductList.Count + 1;
+            }
+
+            return exitCodeEntered;
         }
 
         private static void ShowProductNumberInvalidMessage()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount).ToString());
+            Console.WriteLine("Valid product codes must be entered");
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -243,7 +276,7 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                Console.WriteLine(prod.ProductId + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
             Console.WriteLine("Type quit to exit the application");
         }
@@ -352,8 +385,6 @@ namespace Refactoring
             }
             return UserIsFound;
         }
-
-        
 
         private static void ShowWelcomeMessage()
         {
