@@ -220,7 +220,9 @@ namespace Refactoring
 
             else
             {
-                if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+                var parseResult = Int32.TryParse(ProductNumberEntered, out productNumber);
+                var selectedId = productNumber;
+                if (parseResult && ProductList.Any(p => p.Id == selectedId))
                 {
                     validProductSelected = true;
                 }
@@ -249,7 +251,7 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                Console.WriteLine(prod.Id + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
 
             Console.WriteLine(QuitMenuMessage);
