@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Globalization;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +11,8 @@ namespace Refactoring
 {
     public class Tusc
     {
+        public const string QuitCommand = "quit";
+
         private static List<User> UserList;
         private static List<Product> ProductList;
         private static User LoggedInUser;
@@ -43,14 +46,15 @@ namespace Refactoring
 
         private static void OrderProducts()
         {
+            bool userExit;
             int SelectedProductNumber;
             int QuantityOrdered;
 
             while (true)
             {
                 ShowProductList();
-                SelectedProductNumber = GetValidUserProductSelection();
-                if (SelectedProductNumber == ProductList.Count + 1)
+                SelectedProductNumber = GetValidUserProductSelection(out userExit);
+                if (userExit)
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -190,14 +194,14 @@ namespace Refactoring
             File.WriteAllText(@"Data/Products.json", json2);
         }
 
-        private static int GetValidUserProductSelection()
+        private static int GetValidUserProductSelection(out bool userExit)
         {
             int productNumber;
             while (true)
 	        {
 	            Console.WriteLine("Enter the product number:");
-                string ProductNumberEntered = Console.ReadLine();
-                if (validateProduct(ProductNumberEntered, out productNumber))
+                string userInput = Console.ReadLine();
+                if (validateProduct(userInput, out productNumber, out userExit))
                 {
                    break;
                 }
@@ -205,11 +209,18 @@ namespace Refactoring
             return productNumber;
         }
 
-        private static bool validateProduct(string ProductNumberEntered, out int productNumber )
+        private static bool validateProduct(string userInput, out int productNumber, out bool userExit)
         {
             bool validProductSelected = false;
-            
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+            userExit = false;
+            productNumber = -1;
+
+            if (String.Compare(userInput, QuitCommand, true, CultureInfo.InvariantCulture) == 0)
+            {
+                validProductSelected = true;
+                userExit = true;
+            }
+            else if (Int32.TryParse(userInput, out productNumber) && (productNumber <= ProductCount))
             {
                 validProductSelected = true;
             }
@@ -217,6 +228,7 @@ namespace Refactoring
             {
                 ShowProductNumberInvalidMessage();
             }
+
             return validProductSelected;
         }
 
@@ -238,7 +250,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("(Type quit to exit the application)");
         }
 
         private static void ShowRemainingBalance()
