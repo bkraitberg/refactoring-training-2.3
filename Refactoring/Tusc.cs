@@ -200,13 +200,13 @@ namespace Refactoring
 	        {
 	            Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
-                if (validateProduct(ProductNumberEntered, out productNumber))
-                {
-                    break;
-                }
-                else if (ProductNumberEntered.Equals(quit))
+                if (ProductNumberEntered.Equals(quit))
                 {
                     productNumber = EXIT;
+                    break;
+                }
+                else if (validateProduct(ProductNumberEntered, out productNumber))
+                {
                     break;
                 }
 	        }
@@ -241,10 +241,9 @@ namespace Refactoring
         {
             Console.WriteLine();
             Console.WriteLine("What would you like to buy?");
-            for (int i = 0; i < ProductCount; i++)
+            foreach (Product product in ProductList)
             {
-                Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                Console.WriteLine(product.Id + ": " + product.Name + " (" + product.Price.ToString("C") + ")");
             }
             Console.WriteLine("Type quit to exit the application");
         }
