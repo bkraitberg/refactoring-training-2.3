@@ -15,6 +15,8 @@ namespace Refactoring
         private static User LoggedInUser;
         private static int ProductCount;
 
+        private const string EXIT_COMMAND = "quit";
+
         public static void Start(List<User> users, List<Product> products)
         {
             InitializeMemberVariables(users, products);
@@ -43,14 +45,17 @@ namespace Refactoring
 
         private static void OrderProducts()
         {
+            string SelectedProduct;
             int SelectedProductNumber;
             int QuantityOrdered;
 
             while (true)
             {
                 ShowProductList();
-                SelectedProductNumber = GetValidUserProductSelection();
-                if (SelectedProductNumber == ProductList.Count + 1)
+                SelectedProduct = GetValidUserProductSelection();
+                Int32.TryParse(SelectedProduct, out SelectedProductNumber);
+
+                if (EXIT_COMMAND.Equals(SelectedProduct))
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -190,26 +195,29 @@ namespace Refactoring
             File.WriteAllText(@"Data/Products.json", json2);
         }
 
-        private static int GetValidUserProductSelection()
+        private static String GetValidUserProductSelection()
         {
-            int productNumber;
+            string productNumberEntered = null;
+
             while (true)
 	        {
 	            Console.WriteLine("Enter the product number:");
-                string ProductNumberEntered = Console.ReadLine();
-                if (validateProduct(ProductNumberEntered, out productNumber))
+                productNumberEntered = Console.ReadLine();
+                if (validateProduct(productNumberEntered))
                 {
                    break;
                 }
 	        }
-            return productNumber;
+            return productNumberEntered;
         }
 
-        private static bool validateProduct(string ProductNumberEntered, out int productNumber )
+        private static bool validateProduct(String productNumberEntered)
         {
             bool validProductSelected = false;
-            
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+
+            int productNumber;
+            if (EXIT_COMMAND.Equals(productNumberEntered) || 
+                (Int32.TryParse(productNumberEntered, out productNumber) && (productNumber <= ProductCount + 1)))
             {
                 validProductSelected = true;
             }
@@ -238,7 +246,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
