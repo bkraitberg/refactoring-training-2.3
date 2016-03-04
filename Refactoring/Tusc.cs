@@ -50,7 +50,7 @@ namespace Refactoring
             {
                 ShowProductList();
                 SelectedProductNumber = GetValidUserProductSelection();
-                if (SelectedProductNumber == ProductList.Count + 1)
+                if (SelectedProductNumber == ProductCount + 1)
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -208,14 +208,22 @@ namespace Refactoring
         private static bool validateProduct(string ProductNumberEntered, out int productNumber )
         {
             bool validProductSelected = false;
-            
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+
+            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount))
             {
                 validProductSelected = true;
             }
             else
             {
+                if (ProductNumberEntered == "quit")
+                {
+                    validProductSelected = true;
+                    productNumber = ProductList.Count + 1;
+                }
+                else
+                {
                 ShowProductNumberInvalidMessage();
+                }
             }
             return validProductSelected;
         }
@@ -238,7 +246,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
