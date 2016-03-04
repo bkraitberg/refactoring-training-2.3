@@ -14,6 +14,8 @@ namespace Refactoring
         private static List<Product> ProductList;
         private static User LoggedInUser;
         private static int ProductCount;
+        
+        public static string EXIT_APPLICATION { get { return "quit"; } }
 
         public static void Start(List<User> users, List<Product> products)
         {
@@ -213,6 +215,11 @@ namespace Refactoring
             {
                 validProductSelected = true;
             }
+            else if (ProductNumberEntered.Equals(EXIT_APPLICATION))
+            {
+                validProductSelected = true;
+                productNumber = ProductCount + 1;
+            }
             else
             {
                 ShowProductNumberInvalidMessage();
@@ -224,7 +231,7 @@ namespace Refactoring
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount + 1).ToString());
+            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount).ToString());
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -238,7 +245,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
