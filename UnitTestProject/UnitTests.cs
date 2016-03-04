@@ -17,7 +17,11 @@ namespace UnitTestProject
         private List<Product> products;
         private List<Product> originalProducts;
 
-        private int EXIT_NUMBER = 0;
+        private const string EXIT_TEXT = "quit";
+        private const string MENU_OPTION_CHIPS = "c1";
+        private const string PRESS_ENTER = "\r\n";
+        private const string JASON_LOGIN_ENTRY = "Jason" + PRESS_ENTER + "sfa" + PRESS_ENTER;
+
 
         [SetUp]
         public void Test_Initialize()
@@ -29,8 +33,6 @@ namespace UnitTestProject
             // Load products from data file
             originalProducts = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(@"Data/Products.json"));
             products = DeepCopy<List<Product>>(originalProducts);
-
-            EXIT_NUMBER = products.Count + 1;
         }
 
         [TearDown]
@@ -54,7 +56,15 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    MENU_OPTION_CHIPS +
+                    PRESS_ENTER +
+                    "1" +
+                    PRESS_ENTER +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -70,7 +80,15 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    MENU_OPTION_CHIPS +
+                    PRESS_ENTER +
+                    "1" +
+                    PRESS_ENTER +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -86,7 +104,9 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Joel\r\n"))
+                using (var reader = new StringReader(
+                    "Joel" +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -104,7 +124,9 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("\r\n\r\n"))
+                using (var reader = new StringReader(
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -120,7 +142,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfb\r\n"))
+                using (var reader = new StringReader("Jason" + PRESS_ENTER + "sfb" + PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -138,7 +160,15 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    MENU_OPTION_CHIPS +
+                    PRESS_ENTER +
+                    "0" +
+                    PRESS_ENTER +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -161,7 +191,15 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    MENU_OPTION_CHIPS +
+                    PRESS_ENTER +
+                    "1" +
+                    PRESS_ENTER +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
@@ -173,9 +211,109 @@ namespace UnitTestProject
         }
 
         [Test]
-        public void Test_ErrorOccursWhenProductOutOfStock()
+        public void Test_ErrorOccursWhenUserTriesToPurchaseMoreItemsThanExist()
         {
             // Update data file
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 2;
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    MENU_OPTION_CHIPS +
+                    PRESS_ENTER +
+                    "3" +
+                    PRESS_ENTER +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsFalse(writer.ToString().Contains("You bought 3 Chips"));
+            }
+        }
+
+        [Test]
+        public void Test_MenuListContainsExitOption()
+        {
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader(JASON_LOGIN_ENTRY + EXIT_TEXT + PRESS_ENTER + PRESS_ENTER))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, products);
+                }
+
+                Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
+            }
+        }
+
+        [Test]
+        public void Test_UserCanPurchaseProductWhenOnlyOneInStock()
+        {
+            // Update data file
+            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
+            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 1;
+
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    MENU_OPTION_CHIPS +
+                    PRESS_ENTER +
+                    "1" +
+                    PRESS_ENTER +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, tempProducts);
+                }
+
+                Assert.IsTrue(writer.ToString().Contains("You bought 1 Chips"));
+            }
+        }
+
+        [Test]
+        public void Test_UserCanExitByEnteringQuit()
+        {
+            using (var writer = new StringWriter())
+            {
+                Console.SetOut(writer);
+
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
+                {
+                    Console.SetIn(reader);
+
+                    Tusc.Start(users, products);
+                }
+
+                Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
+                Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
+            }
+        }
+
+        [Test]
+        public void Test_ProductsWithZeroQuantityDoNotAppearInMenu()
+        {
             List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
             tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
 
@@ -183,53 +321,20 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader(
+                    JASON_LOGIN_ENTRY +
+                    EXIT_TEXT +
+                    PRESS_ENTER +
+                    PRESS_ENTER))
                 {
                     Console.SetIn(reader);
 
                     Tusc.Start(users, tempProducts);
                 }
 
-                Assert.IsTrue(writer.ToString().Contains("is out of stock"));
+                Assert.IsFalse(writer.ToString().Contains(": Chips"));
             }
         }
-
-        [Test]
-        public void Test_ProductListContainsExitItem()
-        {
-            using (var writer = new StringWriter())
-            {
-                Console.SetOut(writer);
-
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
-                {
-                    Console.SetIn(reader);
-
-                    Tusc.Start(users, products);
-                }
-
-                Assert.IsTrue(writer.ToString().Contains("" + EXIT_NUMBER + ": Exit"));
-            }
-        }
-
-        //[Test]
-        //public void Test_UserCanExitByEnteringQuit()
-        //{
-        //    using (var writer = new StringWriter())
-        //    {
-        //        Console.SetOut(writer);
-
-        //        using (var reader = new StringReader("Jason\r\nsfa\r\nquit\r\n\r\n"))
-        //        {
-        //            Console.SetIn(reader);
-
-        //            Tusc.Start(users, products);
-        //        }
-
-        //        Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
-        //        Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
-        //    }
-        //}
 
         private static T DeepCopy<T>(T obj)
         {
