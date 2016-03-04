@@ -17,7 +17,13 @@ namespace Refactoring
             // Load products from data file
             List<Product> products = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(@"Data/Products.json"));
 
-            Tusc.Start(users, products);
+            Dictionary<string, Product> productInfo = new Dictionary<string, Product>();
+            foreach (Product product in products)
+            {
+                productInfo.Add(product.Id, product);
+            }
+
+            Tusc.Start(users, productInfo);
         }
     }
 }
