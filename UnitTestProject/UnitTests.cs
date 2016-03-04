@@ -46,11 +46,13 @@ namespace UnitTestProject
         [Test]
         public void Test_StartingTuscFromMainDoesNotThrowAnException()
         {
+            string productId = (originalProducts.Find(u => u.Name == "Chips")).Id; 
+            
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -62,11 +64,13 @@ namespace UnitTestProject
         [Test]
         public void Test_TuscDoesNotThrowAnException()
         {
+            string productId = (originalProducts.Find(u => u.Name == "Chips")).Id; 
+            
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -130,11 +134,13 @@ namespace UnitTestProject
         [Test]
         public void Test_UserCanCancelPurchase()
         {
+            string productId = (originalProducts.Find(u => u.Name == "Chips")).Id;
+
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n0\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -151,13 +157,15 @@ namespace UnitTestProject
         {
             // Update data file
             List<User> tempUsers = DeepCopy<List<User>>(originalUsers);
-            tempUsers.Where(u => u.UserName == "Jason").Single().Balance = 0.0;
+            tempUsers.Single(u => u.UserName == "Jason").Balance = 0.0;
+
+            string productId = (originalProducts.Find(u => u.Name == "Chips")).Id;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -173,13 +181,14 @@ namespace UnitTestProject
         {
             // Update data file
             List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            tempProducts.Single(u => u.Name == "Chips").Qty = 0;
+            string productId = (tempProducts.Find(u => u.Name == "Chips")).Id;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -195,13 +204,14 @@ namespace UnitTestProject
         {
             // Update data file
             List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 1;
+            tempProducts.Single(u => u.Name == "Chips").Qty = 1;
+            string productId = (tempProducts.Find(u => u.Name == "Chips")).Id;
 
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -215,11 +225,13 @@ namespace UnitTestProject
         [Test]
         public void Test_ProductListContainsExitItem()
         {
+            string productId = (originalProducts.Find(u => u.Name == "Chips")).Id; 
+
             using (var writer = new StringWriter())
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n" + productId + "\r\n1\r\n" + Tusc.QuitCommand + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 

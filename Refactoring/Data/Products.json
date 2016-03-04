@@ -1,40 +1,48 @@
 [
   {
+    "Id":  "001",
     "Name": "Chips",
     "Price": 1.49,
     "Quantity": 50
   },
   {
+    "Id": "002",
     "Name": "Cookies",
     "Price": 1.0,
     "Quantity": 100
   },
   {
+    "Id": "003",
     "Name": "Gum",
     "Price": 0.85,
     "Quantity": 50
   },
   {
+    "Id": "004",
     "Name": "Pop",
     "Price": 0.75,
     "Quantity": 75
   },
   {
+    "Id": "005",
     "Name": "Candy",
     "Price": 0.85,
     "Quantity": 30
   },
   {
+    "Id":  "006",
     "Name": "Chocolate Bars",
     "Price": 1.25,
     "Quantity": 25
   },
   {
+    "Id":  "007",
     "Name": "Nuts",
     "Price": 1.0,
     "Quantity": 1
   },
   {
+    "Id":  "008",
     "Name": "Soup",
     "Price": 1.25,
     "Quantity": 50
