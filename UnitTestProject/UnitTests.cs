@@ -53,7 +53,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\nC01\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -69,7 +69,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\nC01\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -137,7 +137,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n0\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\nC01\r\n0\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -160,7 +160,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\nC01\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -182,7 +182,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\nC01\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
@@ -204,7 +204,7 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\n1\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\nC01\r\n1\r\n" + EXIT_NUMBER + "\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
