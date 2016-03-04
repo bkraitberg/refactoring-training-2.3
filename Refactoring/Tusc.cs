@@ -10,6 +10,8 @@ namespace Refactoring
 {
     public class Tusc
     {
+        private const int EXIT = -1;
+
         private static List<User> UserList;
         private static List<Product> ProductList;
         private static User LoggedInUser;
@@ -50,7 +52,7 @@ namespace Refactoring
             {
                 ShowProductList();
                 SelectedProductNumber = GetValidUserProductSelection();
-                if (SelectedProductNumber == ProductList.Count + 1)
+                if (SelectedProductNumber == EXIT)
                 {
                     UpdateCurrentUsersBalance();
                     break;
@@ -193,13 +195,19 @@ namespace Refactoring
         private static int GetValidUserProductSelection()
         {
             int productNumber;
+            String quit = "quit";
             while (true)
 	        {
 	            Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
                 if (validateProduct(ProductNumberEntered, out productNumber))
                 {
-                   break;
+                    break;
+                }
+                else if (ProductNumberEntered.Equals(quit))
+                {
+                    productNumber = EXIT;
+                    break;
                 }
 	        }
             return productNumber;
@@ -238,7 +246,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
