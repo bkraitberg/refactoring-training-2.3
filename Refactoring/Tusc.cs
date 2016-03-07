@@ -208,21 +208,39 @@ namespace Refactoring
         private static bool validateProduct(string ProductNumberEntered, out int productNumber )
         {
             bool validProductSelected = false;
-            
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount))
+            productNumber = 0;
+
+            UserEnteredQuit(ProductNumberEntered, ref productNumber, ref validProductSelected);
+
+            if (!validProductSelected)
+                InputIsValidProductId(ProductNumberEntered, ref productNumber, ref validProductSelected);
+
+            if (!validProductSelected)
+                ShowProductNumberInvalidMessage();
+           
+            return validProductSelected;
+        }
+
+        private static void UserEnteredQuit(string ProductNumberEntered, ref int productNumber, ref bool validProductSelected)
+        {
+            if (ProductNumberEntered.Equals("quit"))
             {
+                productNumber = ProductCount + 1;
                 validProductSelected = true;
             }
-            else
+        }
+
+        private static void InputIsValidProductId(string ProductNumberEntered, ref int productNumber, ref bool validProductSelected)
+        {
+            for (int i = 0; i < ProductCount; i++)
             {
-                if (ProductNumberEntered.Equals("quit"))
+                Product prod = ProductList[i];
+                if (ProductNumberEntered.Equals(prod.Id))
                 {
-                    productNumber = ProductCount + 1;
+                    Int32.TryParse(ProductNumberEntered, out productNumber);
                     validProductSelected = true;
-                } else
-                    ShowProductNumberInvalidMessage();
+                }
             }
-            return validProductSelected;
         }
 
         private static void ShowProductNumberInvalidMessage()
@@ -241,7 +259,7 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                Console.WriteLine(prod.Id + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
             Console.WriteLine("Type quit to exit the application");
         }
