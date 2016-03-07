@@ -111,7 +111,7 @@ namespace Refactoring
         private static bool VerifyStockOnHand(int SelectedProductNumber, int QuantityOrdered)
         {
             bool stockOnHand = true;
-            if (ProductList[SelectedProductNumber-1].Qty <= QuantityOrdered)
+            if (ProductList[SelectedProductNumber-1].Qty < QuantityOrdered)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -208,23 +208,46 @@ namespace Refactoring
         private static bool validateProduct(string ProductNumberEntered, out int productNumber )
         {
             bool validProductSelected = false;
-            
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+            productNumber = 0;
+
+            UserEnteredQuit(ProductNumberEntered, ref productNumber, ref validProductSelected);
+
+            if (!validProductSelected)
+                InputIsValidProductId(ProductNumberEntered, ref productNumber, ref validProductSelected);
+
+            if (!validProductSelected)
+                ShowProductNumberInvalidMessage();
+           
+            return validProductSelected;
+        }
+
+        private static void UserEnteredQuit(string ProductNumberEntered, ref int productNumber, ref bool validProductSelected)
+        {
+            if (ProductNumberEntered.Equals("quit"))
             {
+                productNumber = ProductCount + 1;
                 validProductSelected = true;
             }
-            else
+        }
+
+        private static void InputIsValidProductId(string ProductNumberEntered, ref int productNumber, ref bool validProductSelected)
+        {
+            for (int i = 0; i < ProductCount; i++)
             {
-                ShowProductNumberInvalidMessage();
+                Product prod = ProductList[i];
+                if (ProductNumberEntered.Equals(prod.Id))
+                {
+                    Int32.TryParse(ProductNumberEntered, out productNumber);
+                    validProductSelected = true;
+                }
             }
-            return validProductSelected;
         }
 
         private static void ShowProductNumberInvalidMessage()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount + 1).ToString());
+            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount).ToString());
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -236,9 +259,9 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                Console.WriteLine(prod.Id + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
