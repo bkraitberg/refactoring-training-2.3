@@ -229,7 +229,7 @@ namespace Refactoring
             bool validProductSelected = false;
 
             productIndex = ProductList.FindIndex(x => x.Id.ToLowerInvariant().Equals(ProductNumberEntered.Trim().ToLowerInvariant()));
-            if (productIndex >= 0 && productIndex < ProductCount)
+            if (productIndex >= 0 && productIndex < ProductCount && ProductList[productIndex].Qty > 0)
             {
                 validProductSelected = true;
             }
@@ -244,7 +244,7 @@ namespace Refactoring
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + ProductCount.ToString());
+            Console.WriteLine("Product selection must match a displayed product id");
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -256,7 +256,10 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(prod.Id + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                if (prod.Qty > 0)
+                {
+                    Console.WriteLine(prod.Id + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                }
             }
             Console.WriteLine("Type quit to exit the application");
         }
