@@ -33,5 +33,10 @@
     "Name": "Nuts",
     "Price": 1.0,
     "Quantity": 1
+  },
+  {
+    "Name": "Soup", 
+	"Price": 1.25, 
+	"Quantity": 50
   }
 ]
