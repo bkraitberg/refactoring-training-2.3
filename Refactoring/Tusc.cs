@@ -10,6 +10,8 @@ namespace Refactoring
 {
     public class Tusc
     {
+        private const string EXIT_CODE = "quit";
+ 
         private static List<User> UserList;
         private static List<Product> ProductList;
         private static User LoggedInUser;
@@ -197,7 +199,11 @@ namespace Refactoring
 	        {
 	            Console.WriteLine("Enter the product number:");
                 string ProductNumberEntered = Console.ReadLine();
-                if (validateProduct(ProductNumberEntered, out productNumber))
+                if (isReservedString(ProductNumberEntered, out productNumber))
+                {
+                    break;
+                }
+                else if (validateProduct(ProductNumberEntered, out productNumber))
                 {
                    break;
                 }
@@ -205,11 +211,24 @@ namespace Refactoring
             return productNumber;
         }
 
+        private static bool isReservedString(string ProductNumberEntered, out int productNumber)
+        {
+            if (ProductNumberEntered.Trim().ToLowerInvariant().Equals(EXIT_CODE))
+            {
+                productNumber = ProductCount + 1;
+                return true;
+            }
+
+            productNumber = 0;
+            return false;
+
+        }
+
         private static bool validateProduct(string ProductNumberEntered, out int productNumber )
         {
             bool validProductSelected = false;
             
-            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount + 1))
+            if (Int32.TryParse(ProductNumberEntered, out productNumber) && (productNumber <= ProductCount))
             {
                 validProductSelected = true;
             }
@@ -224,7 +243,7 @@ namespace Refactoring
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount + 1).ToString());
+            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + ProductCount.ToString());
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -238,7 +257,7 @@ namespace Refactoring
                 Product prod = ProductList[i];
                 Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine(ProductList.Count + 1 + ": Exit");
+            Console.WriteLine("Type quit to exit the application");
         }
 
         private static void ShowRemainingBalance()
