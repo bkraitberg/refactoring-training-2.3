@@ -16,8 +16,6 @@ namespace UnitTestProject
         private List<User> originalUsers;
         private List<Product> products;
         private List<Product> originalProducts;
-
-        //private int EXIT_NUMBER = 0;
         private string EXIT_WORD = "quit";
 
         [SetUp]
@@ -31,7 +29,6 @@ namespace UnitTestProject
             originalProducts = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(@"Data/Products.json"));
             products = DeepCopy<List<Product>>(originalProducts);
 
-            //EXIT_NUMBER = products.Count + 1;
         }
 
         [TearDown]
@@ -242,14 +239,14 @@ namespace UnitTestProject
             {
                 Console.SetOut(writer);
 
-                using (var reader = new StringReader("Jason\r\nsfa\r\nquit\r\n\r\n"))
+                using (var reader = new StringReader("Jason\r\nsfa\r\n"+EXIT_WORD+"\r\n\r\n"))
                 {
                     Console.SetIn(reader);
 
                     Tusc.Start(users, products);
                 }
 
-                Assert.IsTrue(writer.ToString().Contains("Type quit to exit the application"));
+                Assert.IsTrue(writer.ToString().Contains("Type " + EXIT_WORD + " to exit the application"));
                 Assert.IsTrue(writer.ToString().Contains("Press Enter key to exit"));
             }
         }

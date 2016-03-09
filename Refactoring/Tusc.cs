@@ -14,6 +14,7 @@ namespace Refactoring
         private static List<Product> ProductList;
         private static User LoggedInUser;
         private static int ProductCount;
+        private const string EXIT_WORD = "quit";
 
         public static void Start(List<User> users, List<Product> products)
         {
@@ -43,35 +44,39 @@ namespace Refactoring
 
         private static void OrderProducts()
         {
-            int SelectedProductNumber;
+            int SelectedProductID;
             int QuantityOrdered;
+ 
 
             while (true)
             {
                 ShowProductList();
-                SelectedProductNumber = GetValidUserProductSelection();
-                //if (SelectedProductNumber == ProductList.Count + 1)
-                if (SelectedProductNumber==0)
-                {
-                    UpdateCurrentUsersBalance();
-                    break;
-                }
-                else
+                SelectedProductID = GetValidUserProductSelection();
+
+
+                if (SelectedProductID > 0)
                 {
                     Console.WriteLine();
-                    Console.WriteLine("You want to buy: " + ProductList[SelectedProductNumber-1].Name);
+                    Console.WriteLine("You want to buy: " + ProductList[SelectedProductID - 1].Name);
                     Console.WriteLine("Your balance is " + LoggedInUser.Balance.ToString("C"));
 
                     QuantityOrdered = GetValidUserProductQuantity();
-                    if (QuantityOrdered > 0 && VerifyUserFundsForSelectedPurchase(SelectedProductNumber, QuantityOrdered) && VerifyStockOnHand(SelectedProductNumber, QuantityOrdered))
+                    if (QuantityOrdered > 0 && VerifyUserFundsForSelectedPurchase(SelectedProductID, QuantityOrdered) &&
+                        VerifyStockOnHand(SelectedProductID, QuantityOrdered))
                     {
-                        OrderProduct(SelectedProductNumber, QuantityOrdered);
+                        OrderProduct(SelectedProductID, QuantityOrdered);
                     }
                     else
                     {
                         ShowPurchaseCancelledMessage();
                     }
                 }
+                else
+                {   
+                    UpdateCurrentUsersBalance();
+                    break;
+                }
+                
             }
         }
 
@@ -193,50 +198,51 @@ namespace Refactoring
 
         private static int GetValidUserProductSelection()
         {
-            int productNumber;
+            int productID;
+
+    
             while (true)
 	        {
-	            Console.WriteLine("Enter the product number:");
-                string ProductNumberEntered = Console.ReadLine();
-	            if (Int32.TryParse(ProductNumberEntered, out productNumber))
+	            Console.WriteLine("Enter the product ID:");
+                string ProductIDEntered = Console.ReadLine();
+
+	            if (ProductIDEntered == EXIT_WORD)
 	            {
-	                if (validateProduct(ProductNumberEntered, out productNumber))
+	                productID = 0;
+	                break;
+	            }
+	            else
+	            {
+	               if (validateProduct(ProductIDEntered, out productID))
 	                {
 	                    break;
 	                }
 	            }
-	            else
-	            {
-	                break;
-	            }
 	        }
-            return productNumber;
+            return productID;
         }
 
-        private static bool validateProduct(string ProductNumberEntered, out int productNumber )
+        private static bool validateProduct(string ProductIDEntered, out int productID )
         {
             bool validProductSelected = false;
-            
-            if (Int32.TryParse(ProductNumberEntered, out productNumber))
-            {
 
-                if (productNumber <= ProductCount + 1) 
+            if  (Int32.TryParse(ProductIDEntered, out productID) && (productID <= ProductCount ) && productID > 0)
                 {
                     validProductSelected = true;
                 }
             else
-                {
-                    ShowProductNumberInvalidMessage();
-                }
+            {
+                ShowProductidInvalidMessage();
             }
+
             return validProductSelected;
         }
 
-        private static void ShowProductNumberInvalidMessage()
+        private static void ShowProductidInvalidMessage()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
-            Console.WriteLine("Product numbers must be numeric in the range of 1 - " + (ProductCount + 1).ToString());
+            Console.WriteLine("Product ID must be in the range of 1 - " + ProductCount.ToString());
             Console.WriteLine("");
             Console.ResetColor();
         }
@@ -248,9 +254,9 @@ namespace Refactoring
             for (int i = 0; i < ProductCount; i++)
             {
                 Product prod = ProductList[i];
-                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                Console.WriteLine(prod.Id + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
             }
-            Console.WriteLine("Type quit to exit the application");
+            Console.WriteLine("Type " + EXIT_WORD + " to exit the application");
         }
 
         private static void ShowRemainingBalance()
